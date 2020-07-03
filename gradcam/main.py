@@ -126,20 +126,20 @@ model_names = sorted(
 #   2. python main.py demo2 -i samples/cat_dog.png
 #   3. python main.py demo3 -a resnet152 -i samples/cat_dog.png
 # the above 3 commands create 3 different contexts which invoke seperate functions in the same program
-# @click.group()  # group all the click main commands (3 in this program)
-# @click.pass_context  # pass the context object of the click command. This means which click command to execute
-# def main(ctx):
-#     print("Mode:", ctx.invoked_subcommand)
+@click.group()  # group all the click main commands (3 in this program)
+@click.pass_context  # pass the context object of the click command. This means which click command to execute
+def main(ctx):
+    print("Mode:", ctx.invoked_subcommand)
 
 #
-# @main.command()  # this is a click command. Infact the first click command. It has below optional arguments
-# @click.option("-i", "--image-paths", type=str, multiple=True,
-#               required=True)  # ask for image paths, multiple taken in as tuple
-# @click.option("-a", "--arch", type=click.Choice(model_names), required=True)  # model to be used
-# @click.option("-t", "--target-layer", type=str, required=True)  # layer to be visualized
-# @click.option("-k", "--topk", type=int, default=3)  # top k most relevant searches to be returned
-# @click.option("-o", "--output-dir", type=str, default="./results")  # provide output directory
-# @click.option("--cuda/--cpu", default=True)  # run on cpu or gpu?
+@main.command()  # this is a click command. Infact the first click command. It has below optional arguments
+@click.option("-i", "--image-paths", type=str, multiple=True,
+              required=True)  # ask for image paths, multiple taken in as tuple
+@click.option("-a", "--arch", type=click.Choice(model_names), required=True)  # model to be used
+@click.option("-t", "--target-layer", type=str, required=True)  # layer to be visualized
+@click.option("-k", "--topk", type=int, default=3)  # top k most relevant searches to be returned
+@click.option("-o", "--output-dir", type=str, default="./results")  # provide output directory
+@click.option("--cuda/--cpu", default=True)  # run on cpu or gpu?
 def demo1(image_paths, target_layer, arch, topk, output_dir, cuda):
     """
     Visualize model responses given multiple images
@@ -275,10 +275,10 @@ def demo1(image_paths, target_layer, arch, topk, output_dir, cuda):
             )
 
 
-# @main.command()  # this is a click command. Infact the second click command. It has below optional arguments
-# @click.option("-i", "--image-paths", type=str, multiple=True, required=True)
-# @click.option("-o", "--output-dir", type=str, default="./results")
-# @click.option("--cuda/--cpu", default=True)
+@main.command()  # this is a click command. Infact the second click command. It has below optional arguments
+@click.option("-i", "--image-paths", type=str, multiple=True, required=True)
+@click.option("-o", "--output-dir", type=str, default="./results")
+@click.option("--cuda/--cpu", default=True)
 def demo2(image_paths, output_dir, cuda):
     """
     Generate Grad-CAM at different layers of ResNet-152
@@ -332,14 +332,14 @@ def demo2(image_paths, output_dir, cuda):
             )
 
 
-# @main.command()  # this is a click command. Infact the third click command. It has below optional arguments
-# @click.option("-i", "--image-paths", type=str, multiple=True, required=True)
-# @click.option("-a", "--arch", type=click.Choice(model_names), required=True)
-# @click.option("-k", "--topk", type=int, default=3)
-# @click.option("-s", "--stride", type=int, default=1)
-# @click.option("-b", "--n-batches", type=int, default=128)
-# @click.option("-o", "--output-dir", type=str, default="./results")
-# @click.option("--cuda/--cpu", default=True)
+@main.command()  # this is a click command. Infact the third click command. It has below optional arguments
+@click.option("-i", "--image-paths", type=str, multiple=True, required=True)
+@click.option("-a", "--arch", type=click.Choice(model_names), required=True)
+@click.option("-k", "--topk", type=int, default=3)
+@click.option("-s", "--stride", type=int, default=1)
+@click.option("-b", "--n-batches", type=int, default=128)
+@click.option("-o", "--output-dir", type=str, default="./results")
+@click.option("--cuda/--cpu", default=True)
 def demo3(image_paths, arch, topk, stride, n_batches, output_dir, cuda):
     """
     Generate occlusion sensitivity maps
@@ -391,16 +391,16 @@ def demo3(image_paths, arch, topk, stride, n_batches, output_dir, cuda):
 
 
 if __name__ == "__main__":
-    # main()  # start program execution
-    image_paths = (["samples/cat_dog.png"])
-    target_layer = "layer4"
-    arch = "resnet152"
-    topk = 1
-    output_dir = "./results"
-    cuda = "cpu"
-    stride = 1
-    n_batches = 128
-    demo1(image_paths, target_layer, arch, topk, output_dir, cuda)
+    main()  # start program execution
+    # image_paths = (["samples/cat_dog.png"])
+    # target_layer = "layer4"
+    # arch = "resnet152"
+    # topk = 1
+    # output_dir = "./results"
+    # cuda = "cpu"
+    # stride = 1
+    # n_batches = 128
+    # demo1(image_paths, target_layer, arch, topk, output_dir, cuda)
 
 
 
