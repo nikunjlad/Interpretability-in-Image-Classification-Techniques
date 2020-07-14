@@ -1,7 +1,7 @@
 .. rst-class:: hide-header
 
-Welcome to Interpretability in Image Segmentation Technique Book
-================================================================
+Interpretability in Image Segmentation Techniques
+=================================================
 
 
 Contents
