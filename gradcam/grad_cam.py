@@ -1,12 +1,6 @@
-#!/usr/bin/env python
-# coding: utf-8
-#
-# Author:   Kazuto Nakashima
-# URL:      http://kazuto1011.github.io
-# Created:  2017-05-26
+# kazuto1011
 
 from collections import Sequence
-
 import numpy as np
 import torch
 import torch.nn as nn
@@ -60,6 +54,7 @@ class BackPropagation(_BaseWrapper):
 
     def generate(self):
         gradient = self.image.grad.clone()
+        print(gradient.shape)
         self.image.grad.zero_()
         return gradient
 

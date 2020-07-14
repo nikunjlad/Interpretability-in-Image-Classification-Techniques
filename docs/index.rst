@@ -1,15 +1,19 @@
-.. Interpretability in Image Segmentation Techniques documentation master file, created by
-   sphinx-quickstart on Sat Jun 27 14:32:49 2020.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+.. rst-class:: hide-header
 
-Welcome to Interpretability in Image Segmentation Techniques's documentation!
-=============================================================================
+Welcome to Interpretability in Image Segmentation Technique Book
+================================================================
+
+
+Contents
+--------
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
 
+   chapters/chap1/introduction
+   chapters/chap2/interpretability
+   chapters/chap3/segmentation
+   chapters/chap4/algorithms
 
 
 Indices and tables

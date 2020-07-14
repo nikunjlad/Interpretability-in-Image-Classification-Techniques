@@ -56,11 +56,11 @@ def load_images(image_paths):
 # get a list of the 1000 classes used in the IMAGENET challenge
 def get_classtable():
     classes = []  # initialize empty list
-    with open("samples/synset_words.txt") as lines:   # read the classes list text file
+    with open("samples/synset_words.txt") as lines:  # read the classes list text file
         for line in lines:
-            line = line.strip().split(" ", 1)[1]    # read lines from the file
+            line = line.strip().split(" ", 1)[1]  # read lines from the file
             line = line.split(", ", 1)[0].replace(" ", "_")
-            classes.append(line)   # list of the the 1000 classes
+            classes.append(line)  # list of the the 1000 classes
     return classes
 
 
@@ -68,7 +68,7 @@ def get_classtable():
 def preprocess(image_path):
     raw_image = cv2.imread(image_path)
     print("Before resize: ", raw_image.shape)
-    raw_image = cv2.resize(raw_image, (224,) * 2)
+    raw_image = cv2.resize(raw_image, (227, 227))
     print("After resize: ", raw_image.shape)
     # we call transforms.Compose class which returns the object and then we pass the image as parameter
     # whenever we use the object as a function and pass a parameter to it, it internally calls the __call__ method
@@ -131,6 +131,7 @@ model_names = sorted(
 def main(ctx):
     print("Mode:", ctx.invoked_subcommand)
 
+
 #
 @main.command()  # this is a click command. Infact the first click command. It has below optional arguments
 @click.option("-i", "--image-paths", type=str, multiple=True,
@@ -149,19 +150,19 @@ def demo1(image_paths, target_layer, arch, topk, output_dir, cuda):
 
     # Synset words
     classes = get_classtable()
-    print("Num of classes: ", len(classes))
+    # print("Num of classes: ", len(classes))
 
     # Model from torchvision
     model = models.__dict__[arch](pretrained=True)  # load pretrained resnet152
     model.to(device)
     model.eval()  # evaluate the pretrained model
-    print(model)
-    print(next(model.parameters()).shape)
+    # print(model)
+    # print(next(model.parameters()).shape)
 
     # get a list of transformed and original raw images
     images, raw_images = load_images(image_paths)
     images = torch.stack(images).to(device)  # stack the transformed and processed images and send to device
-    print(images.shape)
+    # print(images.shape)
     # sys.exit()
 
     """
@@ -177,7 +178,8 @@ def demo1(image_paths, target_layer, arch, topk, output_dir, cuda):
 
     bp = BackPropagation(model=model)
     probs, ids = bp.forward(images)  # sorted
-    print(ids[:, [0]])
+    print(ids[:,:3])
+    print(probs[:,:3])
 
     for i in range(topk):
         bp.backward(ids=ids[:, [i]])
@@ -401,6 +403,3 @@ if __name__ == "__main__":
     # stride = 1
     # n_batches = 128
     # demo1(image_paths, target_layer, arch, topk, output_dir, cuda)
-
-
-
