@@ -1,7 +1,7 @@
 .. rst-class:: hide-header
 
-Interpretability in Image Segmentation Techniques
-=================================================
+A Guide to Interpretability in Image Segmentation Techniques
+============================================================
 
 
 Contents
