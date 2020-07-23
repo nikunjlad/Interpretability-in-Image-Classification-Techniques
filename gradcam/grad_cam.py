@@ -135,8 +135,11 @@ class GradCAM(_BaseWrapper):
             raise ValueError("Invalid layer name: {}".format(target_layer))
 
     def generate(self, target_layer):
-        fmaps = self._find(self.fmap_pool, target_layer)
-        grads = self._find(self.grad_pool, target_layer)
+        print("Inside Generate function of Grad-CAM")
+        fmaps = self._find(self.fmap_pool, target_layer)   # get the feature map of a particular layer during forward pass
+        print("Feature maps shape: ", fmaps.shape)
+        grads = self._find(self.grad_pool, target_layer)   # get the gradients of a particular layer during backward pass
+        print("Gradients shape: ", grads.shape)
         weights = F.adaptive_avg_pool2d(grads, 1)
 
         gcam = torch.mul(fmaps, weights).sum(dim=1, keepdim=True)
