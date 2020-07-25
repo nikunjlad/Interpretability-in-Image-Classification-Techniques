@@ -1,20 +1,9 @@
-#!/usr/bin/env python
-# coding: utf-8
-#
-# Author:   Kazuto Nakashima
-# URL:      http://kazuto1011.github.io
-# Created:  2017-05-18
-
-import copy
 import os.path as osp
-
 import click
-import cv2, sys
-import matplotlib.cm as cm
-import numpy as np
 import torch
 import torch.nn.functional as F
 from torchvision import models, transforms
+from utils import get_classtable
 
 from grad_cam import (
     BackPropagation,
@@ -38,77 +27,6 @@ def get_device(cuda):
     else:
         print("Device: CPU")
     return device
-
-
-# function takes in a list or a tuple of image paths
-def load_images(image_paths):
-    images = []
-    raw_images = []
-    print("Images:")
-    for i, image_path in enumerate(image_paths):
-        print("\t#{}: {}".format(i, image_path))
-        image, raw_image = preprocess(image_path)
-        images.append(image)  # create list of all the processed images of [3,224,224] dimension
-        raw_images.append(raw_image)  # create a list of all the original images as provided by the user of varying size
-    return images, raw_images
-
-
-# get a list of the 1000 classes used in the IMAGENET challenge
-def get_classtable():
-    classes = []  # initialize empty list
-    with open("samples/synset_words.txt") as lines:  # read the classes list text file
-        for line in lines:
-            line = line.strip().split(" ", 1)[1]  # read lines from the file
-            line = line.split(", ", 1)[0].replace(" ", "_")
-            classes.append(line)  # list of the the 1000 classes
-    return classes
-
-
-# function to process 1 image at a time
-def preprocess(image_path):
-    raw_image = cv2.imread(image_path)
-    print("Before resize: ", raw_image.shape)
-    raw_image = cv2.resize(raw_image, (227, 227))
-    print("After resize: ", raw_image.shape)
-    # we call transforms.Compose class which returns the object and then we pass the image as parameter
-    # whenever we use the object as a function and pass a parameter to it, it internally calls the __call__ method
-    image = transforms.Compose(
-        [
-            transforms.ToTensor(),
-            transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-        ]
-    )(raw_image[..., ::-1].copy())  # we send copy of original image for transforming
-    return image, raw_image
-
-
-def save_gradient(filename, gradient):
-    gradient = gradient.cpu().numpy().transpose(1, 2, 0)
-    gradient -= gradient.min()
-    gradient /= gradient.max()
-    gradient *= 255.0
-    cv2.imwrite(filename, np.uint8(gradient))
-
-
-def save_gradcam(filename, gcam, raw_image, paper_cmap=False):
-    gcam = gcam.cpu().numpy()
-    cmap = cm.jet_r(gcam)[..., :3] * 255.0
-    if paper_cmap:
-        alpha = gcam[..., None]
-        gcam = alpha * cmap + (1 - alpha) * raw_image
-    else:
-        gcam = (cmap.astype(np.float) + raw_image.astype(np.float)) / 2
-    cv2.imwrite(filename, np.uint8(gcam))
-
-
-def save_sensitivity(filename, maps):
-    maps = maps.cpu().numpy()
-    scale = max(maps[maps > 0].max(), -maps[maps <= 0].min())
-    maps = maps / scale * 0.5
-    maps += 0.5
-    maps = cm.bwr_r(maps)[..., :3]
-    maps = np.uint8(maps * 255.0)
-    maps = cv2.resize(maps, (224, 224), interpolation=cv2.INTER_NEAREST)
-    cv2.imwrite(filename, maps)
 
 
 # torchvision models
@@ -145,25 +63,20 @@ def demo1(image_paths, target_layer, arch, topk, output_dir, cuda):
     """
     Visualize model responses given multiple images
     """
-
     device = get_device(cuda)  # set device to cpu to gpu based on availability
 
     # Synset words
-    classes = get_classtable()
+    classes = utils.get_classtable()
     # print("Num of classes: ", len(classes))
 
     # Model from torchvision
     model = models.__dict__[arch](pretrained=True)  # load pretrained resnet152
     model.to(device)
     model.eval()  # evaluate the pretrained model
-    # print(model)
-    # print(next(model.parameters()).shape)
 
     # get a list of transformed and original raw images
     images, raw_images = load_images(image_paths)
     images = torch.stack(images).to(device)  # stack the transformed and processed images and send to device
-    # print(images.shape)
-    # sys.exit()
 
     """
     Common usage:
@@ -178,8 +91,6 @@ def demo1(image_paths, target_layer, arch, topk, output_dir, cuda):
 
     bp = BackPropagation(model=model)
     probs, ids = bp.forward(images)  # sorted
-    print(ids[:,:3])
-    print(probs[:,:3])
 
     for i in range(topk):
         bp.backward(ids=ids[:, [i]])
@@ -226,7 +137,7 @@ def demo1(image_paths, target_layer, arch, topk, output_dir, cuda):
     # =========================================================================
     print("Grad-CAM/Guided Backpropagation/Guided Grad-CAM:")
 
-    gcam = GradCAM(model=model)
+    gcam = GradCAM(model=model, target_layer=target_layer, gradcampp=True)
     _ = gcam.forward(images)
 
     gbp = GuidedBackPropagation(model=model)
@@ -239,7 +150,7 @@ def demo1(image_paths, target_layer, arch, topk, output_dir, cuda):
 
         # Grad-CAM
         gcam.backward(ids=ids[:, [i]])
-        regions = gcam.generate(target_layer=target_layer)
+        regions = gcam.generate()
 
         for j in range(len(images)):
             print("\t#{}: {} ({:.5f})".format(j, classes[ids[j, i]], probs[j, i]))
@@ -257,7 +168,7 @@ def demo1(image_paths, target_layer, arch, topk, output_dir, cuda):
             save_gradcam(
                 filename=osp.join(
                     output_dir,
-                    "{}-{}-gradcam-{}-{}.png".format(
+                    "{}-{}-gradcampp-{}-{}.png".format(
                         j, arch, target_layer, classes[ids[j, i]]
                     ),
                 ),
@@ -269,7 +180,7 @@ def demo1(image_paths, target_layer, arch, topk, output_dir, cuda):
             save_gradient(
                 filename=osp.join(
                     output_dir,
-                    "{}-{}-guided_gradcam-{}-{}.png".format(
+                    "{}-{}-guided_gradcampp-{}-{}.png".format(
                         j, arch, target_layer, classes[ids[j, i]]
                     ),
                 ),
@@ -313,7 +224,8 @@ def demo2(image_paths, output_dir, cuda):
         print("Generating Grad-CAM @{}".format(target_layer))
 
         # Grad-CAM
-        regions = gcam.generate(target_layer=target_layer)
+        gcam.target_layer = target_layer
+        regions = gcam.generate()
 
         for j in range(len(images)):
             print(

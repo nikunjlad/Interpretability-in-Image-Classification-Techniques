@@ -1,5 +1,3 @@
-# kazuto1011
-
 from collections import Sequence
 import numpy as np
 import torch
@@ -12,9 +10,10 @@ class _BaseWrapper:
     def __init__(self, model):
         # super(_BaseWrapper, self).__init__()
         # model parameters are usually in the form of a generator. hence we use next() call to get the parameters
-        self.device = next(model.parameters()).device   # get the device on which the parameters are kept
+        self.device = next(model.parameters()).device  # get the device on which the parameters are kept
         self.model = model  # the model
         self.handlers = []  # a set of hook function handlers
+        self.score = None
 
     def _encode_one_hot(self, ids):
         # create a zeros like tensor of shape of equal to logits tensor (1000 classes since IMAGENET)
@@ -23,8 +22,9 @@ class _BaseWrapper:
         return one_hot
 
     def forward(self, image):
-        self.image_shape = image.shape[2:]   # get the image shape so as to resize the feature maps later on
-        self.logits = self.model(image)   # get the logits given the images
+        self.image_shape = image.shape[2:]  # get the image shape so as to resize the feature maps later on
+        self.logits = self.model(image)  # get the logits given the images
+        self.score = self.logits[:, self.logits.max(1)[-1]].squeeze().detach()
         self.probs = F.softmax(self.logits, dim=1)  # a tensor of probabilities for each class. Adds up to 1
         return self.probs.sort(dim=1, descending=True)  # ordered results and indices are returned as a tuple
 
@@ -49,7 +49,7 @@ class _BaseWrapper:
 
 class BackPropagation(_BaseWrapper):
     def forward(self, image):
-        self.image = image.requires_grad_()     # require the gradients for the image
+        self.image = image.requires_grad_()  # require the gradients for the image
         return super(BackPropagation, self).forward(self.image)
 
     def generate(self):
@@ -104,11 +104,13 @@ class GradCAM(_BaseWrapper):
     Look at Figure 2 on page 4
     """
 
-    def __init__(self, model, candidate_layers=None):
+    def __init__(self, model, target_layer=None, gradcampp=False, candidate_layers=None):
         super(GradCAM, self).__init__(model)
         self.fmap_pool = {}
         self.grad_pool = {}
         self.candidate_layers = candidate_layers  # list
+        self.target_layer = target_layer
+        self.gradcampp = gradcampp
 
         def save_fmaps(key):
             def forward_hook(module, input, output):
@@ -134,13 +136,26 @@ class GradCAM(_BaseWrapper):
         else:
             raise ValueError("Invalid layer name: {}".format(target_layer))
 
-    def generate(self, target_layer):
+    def generate(self):
         print("Inside Generate function of Grad-CAM")
-        fmaps = self._find(self.fmap_pool, target_layer)   # get the feature map of a particular layer during forward pass
-        print("Feature maps shape: ", fmaps.shape)
-        grads = self._find(self.grad_pool, target_layer)   # get the gradients of a particular layer during backward pass
-        print("Gradients shape: ", grads.shape)
-        weights = F.adaptive_avg_pool2d(grads, 1)
+        fmaps = self._find(self.fmap_pool,
+                           self.target_layer)  # get the feature map of a particular layer during forward pass
+        grads = self._find(self.grad_pool, self.target_layer)  # get the gradients of a particular layer during backward pass
+        print("Gradients shape during generate: ", grads.shape)
+        print("Activations shape during generate: ", fmaps.shape)
+
+        if self.gradcampp:
+            b, k, u, v = grads.size()
+            alpha_num = grads.pow(2)
+            alpha_denom = grads.pow(2).mul(2) + \
+                          fmaps.mul(grads.pow(3)).view(b, k, u * v).sum(-1, keepdim=True).view(b, k, 1, 1)
+            alpha_denom = torch.where(alpha_denom != 0.0, alpha_denom, torch.ones_like(alpha_denom))
+
+            alpha = alpha_num.div(alpha_denom + 1e-7)
+            positive_gradients = F.relu(self.score.exp() * grads)  # ReLU(dY/dA) == ReLU(exp(S)*dS/dA))
+            weights = (alpha * positive_gradients).view(b, k, u * v).sum(-1).view(b, k, 1, 1)
+        else:
+            weights = F.adaptive_avg_pool2d(grads, 1)
 
         gcam = torch.mul(fmaps, weights).sum(dim=1, keepdim=True)
         gcam = F.relu(gcam)
@@ -158,7 +173,7 @@ class GradCAM(_BaseWrapper):
 
 
 def occlusion_sensitivity(
-    model, images, ids, mean=None, patch=35, stride=1, n_batches=128
+        model, images, ids, mean=None, patch=35, stride=1, n_batches=128
 ):
     """
     "Grad-CAM: Visual Explanations from Deep Networks via Gradient-based Localization"
@@ -200,9 +215,9 @@ def occlusion_sensitivity(
     for i in tqdm(range(0, len(anchors), n_batches), leave=False):
         batch_images = []
         batch_ids = []
-        for grid_h, grid_w in anchors[i : i + n_batches]:
+        for grid_h, grid_w in anchors[i: i + n_batches]:
             images_ = images.clone()
-            images_[..., grid_h : grid_h + patch_H, grid_w : grid_w + patch_W] = mean
+            images_[..., grid_h: grid_h + patch_H, grid_w: grid_w + patch_W] = mean
             batch_images.append(images_)
             batch_ids.append(ids)
         batch_images = torch.cat(batch_images, dim=0)

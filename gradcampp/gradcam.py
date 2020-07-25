@@ -157,6 +157,8 @@ class GradCAMpp(GradCAM):
         logit = self.model_arch(input)
         if class_idx is None:
             score = logit[:, logit.max(1)[-1]].squeeze()
+            print("Score shape: ", score.shape)
+            print("Score: ", score)
         else:
             score = logit[:, class_idx].squeeze()
 
@@ -165,6 +167,8 @@ class GradCAMpp(GradCAM):
         gradients = self.gradients['value']  # dS/dA
         activations = self.activations['value']  # A
         b, k, u, v = gradients.size()
+        print("Gradients shape during generate: ", gradients.shape)
+        print("Activations shape during generate: ", activations.shape)
 
         alpha_num = gradients.pow(2)
         alpha_denom = gradients.pow(2).mul(2) + \
@@ -177,7 +181,7 @@ class GradCAMpp(GradCAM):
 
         saliency_map = (weights * activations).sum(1, keepdim=True)
         saliency_map = F.relu(saliency_map)
-        saliency_map = F.upsample(saliency_map, size=(224, 224), mode='bilinear', align_corners=False)
+        saliency_map = F.upsample(saliency_map, size=(227, 227), mode='bilinear', align_corners=False)
         saliency_map_min, saliency_map_max = saliency_map.min(), saliency_map.max()
         saliency_map = (saliency_map - saliency_map_min).div(saliency_map_max - saliency_map_min).data
 
