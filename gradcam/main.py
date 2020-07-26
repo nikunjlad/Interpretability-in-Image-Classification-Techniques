@@ -2,8 +2,8 @@ import os.path as osp
 import click
 import torch
 import torch.nn.functional as F
-from torchvision import models, transforms
-from utils import get_classtable
+from torchvision import models
+from utils import get_classtable, load_images, save_gradient, save_gradcam, save_sensitivity
 
 from grad_cam import (
     BackPropagation,
@@ -37,7 +37,125 @@ model_names = sorted(
 )
 
 
-# click is a library with is like argparse.
+class Visualizations:
+
+    def __init__(self, model=None, images=None, topk=3, classes=None, arch="resnet101",
+                 target_layer="layer4", method="gradcam", raw_images=None, output_dir="./results"):
+        self.model = model
+        self.images = images
+        self.topk = topk
+        self.classes = classes
+        self.arch = arch
+        self.target_layer = target_layer
+        self.method = method
+        self.raw_images = raw_images
+        self.output_dir = output_dir
+
+    def vanilla_backpropagation(self):
+        print("Vanilla Backpropagation:")
+
+        bp = BackPropagation(model=self.model)
+        probs, ids = bp.forward(self.images)  # sorted
+
+        for i in range(topk):
+            bp.backward(ids=ids[:, [i]])
+            gradients = bp.generate()
+
+            # Save results as image files
+            for j in range(len(self.images)):
+                print("\t#{}: {} ({:.5f})".format(j, self.classes[ids[j, i]], probs[j, i]))
+
+                save_gradient(
+                    filename=osp.join(self.output_dir, "{}-{}-vanilla-{}.png".format(j, self.arch,
+                                                                                     self.classes[ids[j, i]]), ),
+                    gradient=gradients[j]
+                )
+
+        # Remove all the hook function in the "model"
+        bp.remove_hook()
+
+    def deconvolution(self):
+        print("Deconvolution:")
+
+        deconv = Deconvnet(model=self.model)
+        probs, ids = deconv.forward(self.images)
+
+        for i in range(self.topk):
+            deconv.backward(ids=ids[:, [i]])
+            gradients = deconv.generate()
+
+            for j in range(len(self.images)):
+                print("\t#{}: {} ({:.5f})".format(j, self.classes[ids[j, i]], probs[j, i]))
+
+                save_gradient(
+                    filename=osp.join(self.output_dir, "{}-{}-deconvnet-{}.png".format(j, self.arch,
+                                                                                       self.classes[ids[j, i]]), ),
+                    gradient=gradients[j],
+                )
+
+        deconv.remove_hook()
+
+    def guided_backpropagation(self):
+        print("Guided Backpropagation:")
+
+        gbp = GuidedBackPropagation(model=self.model)
+        probs, ids = gbp.forward(self.images)
+
+        for i in range(self.topk):
+            # Guided Backpropagation
+            gbp.backward(ids=ids[:, [i]])
+            gradients = gbp.generate()
+
+            for j in range(len(self.images)):
+                print("\t#{}: {} ({:.5f})".format(j, self.classes[ids[j, i]], probs[j, i]))
+
+                # Guided Backpropagation
+                save_gradient(
+                    filename=osp.join(self.output_dir, "{}-{}-guided-{}.png".format(j, self.arch,
+                                                                                    self.classes[ids[j, i]]), ),
+                    gradient=gradients[j],
+                )
+
+    def gradcam(self):
+        print("Grad-CAM and Guided Grad-CAM:")
+
+        gcam = GradCAM(model=self.model, target_layer=self.target_layer, gradcampp=self.method)
+        probs, ids = gcam.forward(self.images)
+
+        gbp = GuidedBackPropagation(model=self.model)
+        _ = gbp.forward(self.images)
+
+        for i in range(self.topk):
+            # Guided Backpropagation
+            gbp.backward(ids=ids[:, [i]])
+            gradients = gbp.generate()
+
+            # Grad-CAM
+            gcam.backward(ids=ids[:, [i]])
+            regions = gcam.generate()
+
+            for j in range(len(self.images)):
+                print("\t#{}: {} ({:.5f})".format(j, self.classes[ids[j, i]], probs[j, i]))
+
+                # Grad-CAM
+                gradcam_name = str(j) + "-" + str(self.arch) + "-" + self.method + "-" + str(self.target_layer) + "-" + \
+                               str(self.classes[ids[j, i]]) + ".png"
+                save_gradcam(
+                    filename=osp.join(self.output_dir, gradcam_name),
+                    gcam=regions[j, 0],
+                    raw_image=self.raw_images[j],
+                )
+
+                # Guided Grad-CAM
+                guided_name = str(j) + "-" + str(self.arch) + "-guided_" + self.method + "-" + str(self.target_layer) + \
+                              "-" + str(self.classes[ids[j, i]]) + ".png"
+                save_gradient(
+                    filename=osp.join(self.output_dir, guided_name),
+                    gradient=torch.mul(regions, gradients)[j],
+                )
+
+
+# click is a library which is like argparse.
 # Better than argparse for parsing command line arguments. optparse is obselete
 # We have 3 context object since 3 types of commands can be fired as below:
 #   1. python main.py demo1 -a resnet152 -t layer4 -i samples/cat_dog.png -i samples/vegetables.jpg
@@ -50,7 +168,6 @@ def main(ctx):
     print("Mode:", ctx.invoked_subcommand)
 
 
-#
 @main.command()  # this is a click command. Infact the first click command. It has below optional arguments
 @click.option("-i", "--image-paths", type=str, multiple=True,
               required=True)  # ask for image paths, multiple taken in as tuple
@@ -59,14 +176,15 @@ def main(ctx):
 @click.option("-k", "--topk", type=int, default=3)  # top k most relevant searches to be returned
 @click.option("-o", "--output-dir", type=str, default="./results")  # provide output directory
 @click.option("--cuda/--cpu", default=True)  # run on cpu or gpu?
-def demo1(image_paths, target_layer, arch, topk, output_dir, cuda):
+@click.option("-m", "--method", type=str, default="vanilla")  # "vanilla", "deconv", "guidedbp", "gradcam", "gradcampp"
+def vis(image_paths, target_layer, arch, topk, output_dir, cuda, method):
     """
     Visualize model responses given multiple images
     """
     device = get_device(cuda)  # set device to cpu to gpu based on availability
 
     # Synset words
-    classes = utils.get_classtable()
+    classes = get_classtable()
     # print("Num of classes: ", len(classes))
 
     # Model from torchvision
@@ -85,165 +203,16 @@ def demo1(image_paths, target_layer, arch, topk, output_dir, cuda):
     3. Run backward() with a list of specific classes
     4. Run generate() to export results
     """
-
-    # =========================================================================
-    print("Vanilla Backpropagation:")
-
-    bp = BackPropagation(model=model)
-    probs, ids = bp.forward(images)  # sorted
-
-    for i in range(topk):
-        bp.backward(ids=ids[:, [i]])
-        gradients = bp.generate()
-
-        # Save results as image files
-        for j in range(len(images)):
-            print("\t#{}: {} ({:.5f})".format(j, classes[ids[j, i]], probs[j, i]))
-
-            save_gradient(
-                filename=osp.join(
-                    output_dir,
-                    "{}-{}-vanilla-{}.png".format(j, arch, classes[ids[j, i]]),
-                ),
-                gradient=gradients[j],
-            )
-
-    # Remove all the hook function in the "model"
-    bp.remove_hook()
-
-    # =========================================================================
-    print("Deconvolution:")
-
-    deconv = Deconvnet(model=model)
-    _ = deconv.forward(images)
-
-    for i in range(topk):
-        deconv.backward(ids=ids[:, [i]])
-        gradients = deconv.generate()
-
-        for j in range(len(images)):
-            print("\t#{}: {} ({:.5f})".format(j, classes[ids[j, i]], probs[j, i]))
-
-            save_gradient(
-                filename=osp.join(
-                    output_dir,
-                    "{}-{}-deconvnet-{}.png".format(j, arch, classes[ids[j, i]]),
-                ),
-                gradient=gradients[j],
-            )
-
-    deconv.remove_hook()
-
-    # =========================================================================
-    print("Grad-CAM/Guided Backpropagation/Guided Grad-CAM:")
-
-    gcam = GradCAM(model=model, target_layer=target_layer, gradcampp=True)
-    _ = gcam.forward(images)
-
-    gbp = GuidedBackPropagation(model=model)
-    _ = gbp.forward(images)
-
-    for i in range(topk):
-        # Guided Backpropagation
-        gbp.backward(ids=ids[:, [i]])
-        gradients = gbp.generate()
-
-        # Grad-CAM
-        gcam.backward(ids=ids[:, [i]])
-        regions = gcam.generate()
-
-        for j in range(len(images)):
-            print("\t#{}: {} ({:.5f})".format(j, classes[ids[j, i]], probs[j, i]))
-
-            # Guided Backpropagation
-            save_gradient(
-                filename=osp.join(
-                    output_dir,
-                    "{}-{}-guided-{}.png".format(j, arch, classes[ids[j, i]]),
-                ),
-                gradient=gradients[j],
-            )
-
-            # Grad-CAM
-            save_gradcam(
-                filename=osp.join(
-                    output_dir,
-                    "{}-{}-gradcampp-{}-{}.png".format(
-                        j, arch, target_layer, classes[ids[j, i]]
-                    ),
-                ),
-                gcam=regions[j, 0],
-                raw_image=raw_images[j],
-            )
-
-            # Guided Grad-CAM
-            save_gradient(
-                filename=osp.join(
-                    output_dir,
-                    "{}-{}-guided_gradcampp-{}-{}.png".format(
-                        j, arch, target_layer, classes[ids[j, i]]
-                    ),
-                ),
-                gradient=torch.mul(regions, gradients)[j],
-            )
-
-
-@main.command()  # this is a click command. Infact the second click command. It has below optional arguments
-@click.option("-i", "--image-paths", type=str, multiple=True, required=True)
-@click.option("-o", "--output-dir", type=str, default="./results")
-@click.option("--cuda/--cpu", default=True)
-def demo2(image_paths, output_dir, cuda):
-    """
-    Generate Grad-CAM at different layers of ResNet-152
-    """
-
-    device = get_device(cuda)
-
-    # Synset words
-    classes = get_classtable()
-
-    # Model
-    model = models.resnet152(pretrained=True)
-    model.to(device)
-    model.eval()
-
-    # The four residual layers
-    target_layers = ["relu", "layer1", "layer2", "layer3", "layer4"]
-    target_class = 243  # "bull mastif"
-
-    # Images
-    images, raw_images = load_images(image_paths)
-    images = torch.stack(images).to(device)
-
-    gcam = GradCAM(model=model)
-    probs, ids = gcam.forward(images)
-    ids_ = torch.LongTensor([[target_class]] * len(images)).to(device)
-    gcam.backward(ids=ids_)
-
-    for target_layer in target_layers:
-        print("Generating Grad-CAM @{}".format(target_layer))
-
-        # Grad-CAM
-        gcam.target_layer = target_layer
-        regions = gcam.generate()
-
-        for j in range(len(images)):
-            print(
-                "\t#{}: {} ({:.5f})".format(
-                    j, classes[target_class], float(probs[ids == target_class])
-                )
-            )
-
-            save_gradcam(
-                filename=osp.join(
-                    output_dir,
-                    "{}-{}-gradcam-{}-{}.png".format(
-                        j, "resnet152", target_layer, classes[target_class]
-                    ),
-                ),
-                gcam=regions[j, 0],
-                raw_image=raw_images[j],
-            )
+    v = Visualizations(model=model, images=images, topk=topk, classes=classes, arch=arch, target_layer=target_layer,
+                       method=method, raw_images=raw_images, output_dir=output_dir)
+    if method == "vanilla":
+        v.vanilla_backpropagation()
+    elif method == "deconv":
+        v.deconvolution()
+    elif method == "guidedbp":
+        v.guided_backpropagation()
+    else:
+        v.gradcam()
 
 
 @main.command()  # this is a click command. Infact the third click command. It has below optional arguments
@@ -254,7 +223,7 @@ def demo2(image_paths, output_dir, cuda):
 @click.option("-b", "--n-batches", type=int, default=128)
 @click.option("-o", "--output-dir", type=str, default="./results")
 @click.option("--cuda/--cpu", default=True)
-def demo3(image_paths, arch, topk, stride, n_batches, output_dir, cuda):
+def occlusion(image_paths, arch, topk, stride, n_batches, output_dir, cuda):
     """
     Generate occlusion sensitivity maps
     """
@@ -314,4 +283,4 @@ if __name__ == "__main__":
     # cuda = "cpu"
     # stride = 1
     # n_batches = 128
-    # demo1(image_paths, target_layer, arch, topk, output_dir, cuda)
+    # vis(image_paths, target_layer, arch, topk, output_dir, cuda)

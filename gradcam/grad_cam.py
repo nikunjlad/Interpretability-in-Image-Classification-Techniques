@@ -104,7 +104,7 @@ class GradCAM(_BaseWrapper):
     Look at Figure 2 on page 4
     """
 
-    def __init__(self, model, target_layer=None, gradcampp=False, candidate_layers=None):
+    def __init__(self, model, target_layer=None, gradcampp="gradcam", candidate_layers=None):
         super(GradCAM, self).__init__(model)
         self.fmap_pool = {}
         self.grad_pool = {}
@@ -144,7 +144,7 @@ class GradCAM(_BaseWrapper):
         print("Gradients shape during generate: ", grads.shape)
         print("Activations shape during generate: ", fmaps.shape)
 
-        if self.gradcampp:
+        if self.gradcampp == "gradcampp":
             b, k, u, v = grads.size()
             alpha_num = grads.pow(2)
             alpha_denom = grads.pow(2).mul(2) + \
