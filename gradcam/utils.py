@@ -13,9 +13,7 @@ class Utils:
 # function to process 1 image at a time
 def preprocess(image_path):
     raw_image = cv2.imread(image_path)
-    print("Before resize: ", raw_image.shape)
     raw_image = cv2.resize(raw_image, (227, 227))
-    print("After resize: ", raw_image.shape)
     # we call transforms.Compose class which returns the object and then we pass the image as parameter
     # whenever we use the object as a function and pass a parameter to it, it internally calls the __call__ method
     image = transforms.Compose(
@@ -60,7 +58,6 @@ def save_gradient(filename, gradient):
 
 
 def save_gradcam(filename, gcam, raw_image, paper_cmap=False):
-    print("Requires grad? :", gcam.requires_grad)
     gcam = gcam.cpu().numpy()
     cmap = cm.jet_r(gcam)[..., :3] * 255.0
     if paper_cmap:

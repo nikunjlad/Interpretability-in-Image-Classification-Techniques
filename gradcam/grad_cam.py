@@ -54,7 +54,6 @@ class BackPropagation(_BaseWrapper):
 
     def generate(self):
         gradient = self.image.grad.clone()
-        print(gradient.shape)
         self.image.grad.zero_()
         return gradient
 
@@ -141,10 +140,9 @@ class GradCAM(_BaseWrapper):
         fmaps = self._find(self.fmap_pool,
                            self.target_layer)  # get the feature map of a particular layer during forward pass
         grads = self._find(self.grad_pool, self.target_layer)  # get the gradients of a particular layer during backward pass
-        print("Gradients shape during generate: ", grads.shape)
-        print("Activations shape during generate: ", fmaps.shape)
 
         if self.gradcampp == "gradcampp":
+            print("Executing Grad-CAM++")
             b, k, u, v = grads.size()
             alpha_num = grads.pow(2)
             alpha_denom = grads.pow(2).mul(2) + \

@@ -57,7 +57,7 @@ class Visualizations:
         bp = BackPropagation(model=self.model)
         probs, ids = bp.forward(self.images)  # sorted
 
-        for i in range(topk):
+        for i in range(self.topk):
             bp.backward(ids=ids[:, [i]])
             gradients = bp.generate()
 
