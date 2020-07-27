@@ -145,8 +145,10 @@ class GradCAM(_BaseWrapper):
             print("Executing Grad-CAM++")
             b, k, u, v = grads.size()
             alpha_num = grads.pow(2)
-            alpha_denom = grads.pow(2).mul(2) + \
-                          fmaps.mul(grads.pow(3)).view(b, k, u * v).sum(-1, keepdim=True).view(b, k, 1, 1)
+            global_sum = fmaps.view(b, k, u * v).sum(-1, keepdim=True).view(b, k, 1, 1)
+            alpha_denom = grads.pow(2).mul(2) + global_sum.mul(grads.pow(3))
+            # alpha_denom = grads.pow(2).mul(2) + \
+            #               fmaps.mul(grads.pow(3)).view(b, k, u * v).sum(-1, keepdim=True).view(b, k, 1, 1)
             alpha_denom = torch.where(alpha_denom != 0.0, alpha_denom, torch.ones_like(alpha_denom))
 
             alpha = alpha_num.div(alpha_denom + 1e-7)

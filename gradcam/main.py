@@ -1,4 +1,4 @@
-import os.path as osp
+import os
 import click
 import torch
 import torch.nn.functional as F
@@ -66,7 +66,7 @@ class Visualizations:
                 print("\t#{}: {} ({:.5f})".format(j, self.classes[ids[j, i]], probs[j, i]))
 
                 save_gradient(
-                    filename=osp.join(self.output_dir, "{}-{}-vanilla-{}.png".format(j, self.arch,
+                    filename=os.path.join(self.output_dir, "{}-{}-vanilla-{}.png".format(j, self.arch,
                                                                                      self.classes[ids[j, i]]), ),
                     gradient=gradients[j]
                 )
@@ -88,7 +88,7 @@ class Visualizations:
                 print("\t#{}: {} ({:.5f})".format(j, self.classes[ids[j, i]], probs[j, i]))
 
                 save_gradient(
-                    filename=osp.join(self.output_dir, "{}-{}-deconvnet-{}.png".format(j, self.arch,
+                    filename=os.path.join(self.output_dir, "{}-{}-deconvnet-{}.png".format(j, self.arch,
                                                                                        self.classes[ids[j, i]]), ),
                     gradient=gradients[j],
                 )
@@ -111,7 +111,7 @@ class Visualizations:
 
                 # Guided Backpropagation
                 save_gradient(
-                    filename=osp.join(self.output_dir, "{}-{}-guided-{}.png".format(j, self.arch,
+                    filename=os.path.join(self.output_dir, "{}-{}-guided-{}.png".format(j, self.arch,
                                                                                     self.classes[ids[j, i]]), ),
                     gradient=gradients[j],
                 )
@@ -138,21 +138,14 @@ class Visualizations:
                 print("\t#{}: {} ({:.5f})".format(j, self.classes[ids[j, i]], probs[j, i]))
 
                 # Grad-CAM
-                gradcam_name = str(j) + "-" + str(self.arch) + "-" + self.method + "-" + str(self.target_layer) + "-" + \
-                               str(self.classes[ids[j, i]]) + ".png"
-                save_gradcam(
-                    filename=osp.join(self.output_dir, gradcam_name),
-                    gcam=regions[j, 0],
-                    raw_image=self.raw_images[j],
-                )
+                save_gradcam(filename=os.path.join(self.output_dir, "{}-{}-{}-{}-{}.png".format(
+                    j, self.arch, self.method, self.target_layer, self.classes[ids[j, i]]),),
+                             gcam=regions[j, 0], raw_image=self.raw_images[j])
 
                 # Guided Grad-CAM
-                guided_name = str(j) + "-" + str(self.arch) + "-guided_" + self.method + "-" + str(self.target_layer) + \
-                              "-" + str(self.classes[ids[j, i]]) + ".png"
-                save_gradient(
-                    filename=osp.join(self.output_dir, guided_name),
-                    gradient=torch.mul(regions, gradients)[j],
-                )
+                save_gradient(filename=os.path.join(self.output_dir, "{}-{}-guided_{}-{}-{}.png".format(
+                    j, self.arch, self.method, self.target_layer, self.classes[ids[j, i]]),),
+                              gradient=torch.mul(regions, gradients)[j])
 
 
 # click is a library which is like argparse.
@@ -169,8 +162,7 @@ def main(ctx):
 
 
 @main.command()  # this is a click command. Infact the first click command. It has below optional arguments
-@click.option("-i", "--image-paths", type=str, multiple=True,
-              required=True)  # ask for image paths, multiple taken in as tuple
+@click.option("-i", "--image-paths", type=str, required=True)  # ask for image paths, multiple taken in as tuple
 @click.option("-a", "--arch", type=click.Choice(model_names), required=True)  # model to be used
 @click.option("-t", "--target-layer", type=str, required=True)  # layer to be visualized
 @click.option("-k", "--topk", type=int, default=3)  # top k most relevant searches to be returned
@@ -195,6 +187,10 @@ def vis(image_paths, target_layer, arch, topk, output_dir, cuda, method):
     # get a list of transformed and original raw images
     images, raw_images = load_images(image_paths)
     images = torch.stack(images).to(device)  # stack the transformed and processed images and send to device
+    output_dir = os.path.join(output_dir, image_paths.split("/")[-1].split(".")[0])
+
+    if not os.path.exists(output_dir):
+        os.mkdir(output_dir)
 
     """
     Common usage:
@@ -263,7 +259,7 @@ def occlusion(image_paths, arch, topk, stride, n_batches, output_dir, cuda):
                 print("\t#{}: {} ({:.5f})".format(j, classes[ids[j, i]], probs[j, i]))
 
                 save_sensitivity(
-                    filename=osp.join(
+                    filename=os.path.join(
                         output_dir,
                         "{}-{}-sensitivity-{}-{}.png".format(
                             j, arch, p, classes[ids[j, i]]

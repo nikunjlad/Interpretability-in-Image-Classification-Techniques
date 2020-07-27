@@ -30,11 +30,10 @@ def load_images(image_paths):
     images = []
     raw_images = []
     print("Images:")
-    for i, image_path in enumerate(image_paths):
-        print("\t#{}: {}".format(i, image_path))
-        image, raw_image = preprocess(image_path)
-        images.append(image)  # create list of all the processed images of [3,224,224] dimension
-        raw_images.append(raw_image)  # create a list of all the original images as provided by the user of varying size
+    print("\t#{}: {}".format(0, image_paths))
+    image, raw_image = preprocess(image_paths)
+    images.append(image)  # create list of all the processed images of [3,224,224] dimension
+    raw_images.append(raw_image)  # create a list of all the original images as provided by the user of varying size
     return images, raw_images
 
 
