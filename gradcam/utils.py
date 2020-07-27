@@ -40,7 +40,7 @@ def load_images(image_paths):
 # get a list of the 1000 classes used in the IMAGENET challenge
 def get_classtable():
     classes = []  # initialize empty list
-    with open("samples/synset_words.txt") as lines:  # read the classes list text file
+    with open("synset_words.txt") as lines:  # read the classes list text file
         for line in lines:
             line = line.strip().split(" ", 1)[1]  # read lines from the file
             line = line.split(", ", 1)[0].replace(" ", "_")
