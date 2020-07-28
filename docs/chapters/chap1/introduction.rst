@@ -3,8 +3,23 @@ Introduction
 ============
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 4
 
+Once upon a time, during 1500 B.C. in ancient Egypt, the Egyptians were on the verge of a major invention, the invention
+of sundials. How do we measure time? Back in the day, the measurement was not like how today's clocks measure time. In fact
+for 3 millenia or more the basic unit of time was he period of daylight. The Egyptians broke the period of sunrise to
+sunset in 12 parts, giving us the forerunner of today's hours. Unlike the constant length of hours as measured today by
+our clocks the Egyptian hour was not of constant length; infact it varied with seasons and also based on the length of the
+day. It also varied from place to place on the surface of the Earth. Most importantly, time as a measurable concept
+effectively ceased during the time of darkness when there was no sunlight. The Egyptians did not account of the hours the
+light was not present.
+
+The need to measure time independently of the sun eventually gave rise to various devices, most notably sandglasses,
+waterclocks and candles. The first two of these utilized the flow of some substance to measure time, the latter the
+steady fall in the height of the candle. All three provided a metaphor for time as something that flows continuously,
+and thus began to shape the way we think of time. Though their accuracy was never great, these devices not only provided
+a way to measure time without the need for the sun to be visible in the sky, they also provided the basis for a concept
+of time that did not depend upon the length of the day.
 
 As humans we experience a revolution every now and then in our lifetime. In the field of technology, we had our
 **First Industrial Revolution** during the 1780-1840 period where we transitioned from hand made goods to automated
@@ -28,14 +43,14 @@ What is Computer Vision?
 
 I don't know if you have come across this word - "Computer Vision" earlier, but, I am pretty sure you must have
 heard Machine Learning and other buzz words. What exactly is Computer Vision? If I were to explain a 5-year old or a
-general population in particular what this is, then I would say - *it's the science of making intelligent systems using
-images and videos*. Yes, it is a science since there are a lot of algorithms involved and the field is expanding at an
+general population in particular what this is, then I would say - ***it's the science of making intelligent systems using
+images and videos***. Yes, it is a science since there are a lot of algorithms involved and the field is expanding at an
 exponential rate. And since we primarily focus on Images and Videos and depth maps, it's called vision, pertaining to
 the human visual sensory system. So, now you have a fair idea about what computer vision is. But, is that all about this
 field? That doesn't rather cover the entire spectrum of applications! Next up, I would like to go about some important and
 specific areas of Computer Vision along with their applications and examples.
 
-1. Image Classification
+Image Classification
 -----------------------
 
 Image Classification is one of the most popular application of computer vision. The idea is quite simple and there are
@@ -50,19 +65,24 @@ a lot of research is done in this domain. Some popular architectures using CNNs 
 .. image:: ../../_static/classification.gif
     :width: 500pt
 
-2. Object Detection
+Object Detection
+----------------
 
-3. Image Segmentation
+Image Segmentation
+------------------
 
-4. Visual Question Answering
+Visual Question Answering
+-------------------------
 
-5. Image Captioning
+Image Captioning
+----------------
 
-6. Text-to-Image Synthesis
+Text-to-Image Synthesis
+-----------------------
 
-7. Pose Estimation
+Pose Estimation
+---------------
 
-8.
 
 
 

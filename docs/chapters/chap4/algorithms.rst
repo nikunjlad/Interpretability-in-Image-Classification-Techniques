@@ -9,7 +9,6 @@ Interpretability in Computer Vision
    gradcam/gradcam
    gradcampp/gradcampp
    scorecam/scorecam
-   fastcam/fastcam
 
 
 
