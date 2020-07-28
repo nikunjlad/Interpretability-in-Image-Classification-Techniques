@@ -6,51 +6,16 @@ Created on Thu Oct 21 11:09:09 2017
 import os
 import copy
 import numpy as np
-from PIL import Image, ImageFilter
+from PIL import Image
 import matplotlib.cm as mpl_color_map
 
 import torch
 from torch.autograd import Variable
 from torchvision import models
+import matplotlib.cm as cm
 
 
-def convert_to_grayscale(im_as_arr):
-    """
-        Converts 3d image to grayscale
-
-    Args:
-        im_as_arr (numpy arr): RGB image with shape (D,W,H)
-
-    returns:
-        grayscale_im (numpy_arr): Grayscale image with shape (1,W,D)
-    """
-    grayscale_im = np.sum(np.abs(im_as_arr), axis=0)
-    im_max = np.percentile(grayscale_im, 99)
-    im_min = np.min(grayscale_im)
-    grayscale_im = (np.clip((grayscale_im - im_min) / (im_max - im_min), 0, 1))
-    grayscale_im = np.expand_dims(grayscale_im, axis=0)
-    return grayscale_im
-
-
-def save_gradient_images(gradient, file_name):
-    """
-        Exports the original gradient image
-
-    Args:
-        gradient (np arr): Numpy array of the gradient with shape (3, 224, 224)
-        file_name (str): File name to be exported
-    """
-    if not os.path.exists('results'):
-        os.makedirs('results')
-    # Normalize
-    gradient = gradient - gradient.min()
-    gradient /= gradient.max()
-    # Save image
-    path_to_file = os.path.join('results', file_name + '.jpg')
-    save_image(gradient, path_to_file)
-
-
-def save_class_activation_images(org_img, activation_map, file_name):
+def save_class_activation_images(org_img, activation_map, arch, target_layer, file_name):
     """
         Saves cam activation map and activation map on the original image
 
@@ -62,16 +27,19 @@ def save_class_activation_images(org_img, activation_map, file_name):
     if not os.path.exists('results'):
         os.makedirs('results')
     # Grayscale activation map
-    heatmap, heatmap_on_image = apply_colormap_on_image(org_img, activation_map, 'hsv')
+    print("Original image shape: ", org_img.size)
+    print("Activation map shape: ", activation_map.size)
+    # heatmap, heatmap_on_image = apply_colormap_on_image(org_img, activation_map, 'jet_r')
+    save_scorecam(file_name, activation_map, org_img, arch, target_layer)
     # Save colored heatmap
-    path_to_file = os.path.join('results', file_name + '_Cam_Heatmap.png')
-    save_image(heatmap, path_to_file)
-    # Save heatmap on iamge
-    path_to_file = os.path.join('results', file_name + '_Cam_On_Image.png')
-    save_image(heatmap_on_image, path_to_file)
-    # SAve grayscale heatmap
-    path_to_file = os.path.join('results', file_name + '_Cam_Grayscale.png')
-    save_image(activation_map, path_to_file)
+    # path_to_file = os.path.join('results', file_name + '_Cam_Heatmap.png')
+    # save_image(heatmap, path_to_file)
+    # # Save heatmap on iamge
+    # path_to_file = os.path.join('results', file_name + '_Cam_On_Image.png')
+    # save_image(heatmap_on_image, path_to_file)
+    # # SAve grayscale heatmap
+    # path_to_file = os.path.join('results', file_name + '_Cam_Grayscale.png')
+    # save_image(activation_map, path_to_file)
 
 
 def apply_colormap_on_image(org_im, activation, colormap_name):
@@ -82,20 +50,51 @@ def apply_colormap_on_image(org_im, activation, colormap_name):
         activation_map (numpy arr): Activation map (grayscale) 0-255
         colormap_name (str): Name of the colormap
     """
+    print("Activation type: ", activation.dtype)
+    print("Original type: ", np.array(org_im).dtype)
     # Get colormap
     color_map = mpl_color_map.get_cmap(colormap_name)
+    print(color_map)
     no_trans_heatmap = color_map(activation)
+    print("no trans: ", no_trans_heatmap.shape)
     # Change alpha channel in colormap to make sure original image is displayed
     heatmap = copy.copy(no_trans_heatmap)
     heatmap[:, :, 3] = 0.4
     heatmap = Image.fromarray((heatmap * 255).astype(np.uint8))
     no_trans_heatmap = Image.fromarray((no_trans_heatmap * 255).astype(np.uint8))
+    no_trans_heatmap.show("Score map")
 
     # Apply heatmap on iamge
     heatmap_on_image = Image.new("RGBA", org_im.size)
+    print("new heatmap on image size: ", heatmap_on_image.mode)
+    print("Original image before convert:", org_im.size)
     heatmap_on_image = Image.alpha_composite(heatmap_on_image, org_im.convert('RGBA'))
+    print("Original image after convert: ", org_im.size)
+    print("actual heatmap shape: ", heatmap.size)
+    print("composited heat map shape: ", heatmap_on_image.size)
     heatmap_on_image = Image.alpha_composite(heatmap_on_image, heatmap)
     return no_trans_heatmap, heatmap_on_image
+
+
+def save_scorecam(filename, scam, raw_image, arch, target_layer, paper_cmap=False):
+    # scam = scam.cpu().numpy()
+    cmap = cm.jet_r(scam)[..., :3] * 255.0
+    print("Raw image type: ", type(raw_image))
+    print("Gcam map type: ", type(scam))
+    path_to_file = os.path.join('results', filename + "-" + arch + "-" + str(target_layer) + '_Cam_Heatmap.png')
+    save_image(cmap.astype(np.uint8), path_to_file)
+    print(np.array(raw_image).shape)
+    print(cmap.shape)
+    if paper_cmap:
+        alpha = scam[..., None]
+        scam = alpha * cmap + (1 - alpha) * raw_image
+    else:
+        scam = (cmap.astype(np.float) + np.array(raw_image).astype(np.float)) / 2
+
+    print(scam.dtype)
+    path_to_file = os.path.join('results', filename + "-" + arch + "-" + str(target_layer) + '_Cam_On_Image.png')
+    save_image(scam.astype(np.uint8), path_to_file)
+    # cv2.imwrite(filename, np.uint8(gcam))
 
 
 def format_np_output(np_arr):
@@ -161,7 +160,7 @@ def preprocess_image(pil_im, resize_im=True):
 
     # Resize image
     if resize_im:
-        pil_im = pil_im.resize((224, 224), Image.ANTIALIAS)
+        pil_im = pil_im.resize((227, 227), Image.ANTIALIAS)
 
     im_as_arr = np.float32(pil_im)
     im_as_arr = im_as_arr.transpose(2, 0, 1)  # Convert array to D,W,H
@@ -198,6 +197,7 @@ def recreate_image(im_as_var):
     recreated_im = np.round(recreated_im * 255)
 
     recreated_im = np.uint8(recreated_im).transpose(1, 2, 0)
+    recreated_im = Image.fromarray(recreated_im)
     return recreated_im
 
 
@@ -230,9 +230,10 @@ def get_example_params(example_index):
         pretrained_model(Pytorch model): Model to use for the operations
     """
     # Pick one of the examples
-    example_list = (('input_images/snake.jpg', 56),
-                    ('input_images/cat_dog.png', 243),
-                    ('input_images/spider.png', 72))
+    example_list = (('input_images/half_dome.jpeg', None),
+                    ('input_images/bridge.jpeg', None),
+                    ('input_images/vicksburg.jpg', None))
+
     img_path = example_list[example_index][0]
     target_class = example_list[example_index][1]
     file_name_to_export = img_path[img_path.rfind('/') + 1:img_path.rfind('.')]
@@ -240,6 +241,7 @@ def get_example_params(example_index):
     original_image = Image.open(img_path).convert('RGB')
     # Process image
     prep_img = preprocess_image(original_image)
+    print(type(prep_img))
     # Define model
     pretrained_model = models.alexnet(pretrained=True)
     return (original_image,
