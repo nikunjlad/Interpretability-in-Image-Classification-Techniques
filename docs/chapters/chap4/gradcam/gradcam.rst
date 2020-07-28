@@ -43,7 +43,7 @@ the creation of Guided Grad-CAM. Guided Grad-CAM gives the best of both worlds w
 behavior along with fine grained visualizations (high resolution). Important regions are highlighted even if image has
 multiple concepts.
 
-.. image:: ../../_static/gradcam.png
+.. image:: ../../../_static/gradcam.png
     :width: 500pt
 
 Convolution Neural Networks have the natural capability to retain spatial information and the last convolutional layer
