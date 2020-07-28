@@ -36,6 +36,7 @@ field? That doesn't rather cover the entire spectrum of applications! Next up, I
 specific areas of Computer Vision along with their applications and examples.
 
 1. Image Classification
+-----------------------
 
 Image Classification is one of the most popular application of computer vision. The idea is quite simple and there are
 many techniques to help us achieve it. While I won't be covering the various techniques which help us achieve Image
@@ -47,7 +48,7 @@ a lot of research is done in this domain. Some popular architectures using CNNs 
 **Residual Networks (ResNets)**, **GoogleNet**, **VGG-16**, etc.
 
 .. image:: ../../_static/classification.gif
-    :width: 50pt
+    :width: 500pt
 
 2. Object Detection
 
