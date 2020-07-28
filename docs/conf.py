@@ -17,7 +17,7 @@
 
 # -- Project information -----------------------------------------------------
 
-project = ''
+project = 'A Guide to Interpretability in Image Segmentation Techniques'
 copyright = '2020, Nikunj Lad'
 author = 'Nikunj Lad'
 
