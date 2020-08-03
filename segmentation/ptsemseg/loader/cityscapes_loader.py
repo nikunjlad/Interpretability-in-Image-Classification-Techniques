@@ -78,13 +78,13 @@ class cityscapesLoader(Dataset):
         self.n_classes = 19
         self.img_size = img_size if isinstance(img_size, tuple) else (img_size, img_size)
         self.mean = np.array(self.mean_rgb[version])
-        print("Mean: ", self.mean)
+        # print("Mean: ", self.mean)
         self.files = {}
 
         self.images_base = os.path.join(self.root, "leftImg8bit", self.split)
-        print("Image base: ", self.images_base)
+        # print("Image base: ", self.images_base)
         self.annotations_base = os.path.join(self.root, "gtFine", self.split)
-        print("Annotation base: ", self.annotations_base)
+        # print("Annotation base: ", self.annotations_base)
 
         self.files[split] = recursive_glob(rootdir=self.images_base, suffix=".png")
 
@@ -195,7 +195,7 @@ class cityscapesLoader(Dataset):
         # cv2.waitKey(0)
         # cv2.destroyAllWindows()
         img = img.transpose(2, 0, 1)
-        print("after transpose: ", img.shape)
+        # print("after transpose: ", img.shape)
 
         classes = np.unique(lbl)
         lbl = lbl.astype(float)
