@@ -43,8 +43,11 @@ What is Computer Vision?
 
 I don't know if you have come across this word - "Computer Vision" earlier, but, I am pretty sure you must have
 heard Machine Learning and other buzz words. What exactly is Computer Vision? If I were to explain a 5-year old or a
-general population in particular what this is, then I would say - ***it's the science of making intelligent systems using
-images and videos***. Yes, it is a science since there are a lot of algorithms involved and the field is expanding at an
+general population in particular what this is, then I would say -
+
+> **it's the science of making intelligent systems using images and videos**.
+
+Yes, it is a science since there are a lot of algorithms involved and the field is expanding at an
 exponential rate. And since we primarily focus on Images and Videos and depth maps, it's called vision, pertaining to
 the human visual sensory system. So, now you have a fair idea about what computer vision is. But, is that all about this
 field? That doesn't rather cover the entire spectrum of applications! Next up, I would like to go about some important and
