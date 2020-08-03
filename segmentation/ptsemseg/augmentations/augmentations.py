@@ -2,7 +2,8 @@ import math
 import numbers
 import random
 import numpy as np
-import torchvision.transforms.functional as tf
+from torchvision.transforms.functional import adjust_gamma, adjust_hue, adjust_saturation, adjust_brightness,\
+    adjust_contrast, pad, affine, crop
 
 from PIL import Image, ImageOps
 
@@ -60,7 +61,7 @@ class AdjustGamma(object):
 
     def __call__(self, img, mask):
         assert img.size == mask.size
-        return tf.adjust_gamma(img, random.uniform(1, 1 + self.gamma)), mask
+        return adjust_gamma(img, random.uniform(1, 1 + self.gamma)), mask
 
 
 class AdjustSaturation(object):
@@ -70,7 +71,7 @@ class AdjustSaturation(object):
     def __call__(self, img, mask):
         assert img.size == mask.size
         return (
-            tf.adjust_saturation(img, random.uniform(1 - self.saturation, 1 + self.saturation)),
+            adjust_saturation(img, random.uniform(1 - self.saturation, 1 + self.saturation)),
             mask,
         )
 
@@ -81,7 +82,7 @@ class AdjustHue(object):
 
     def __call__(self, img, mask):
         assert img.size == mask.size
-        return tf.adjust_hue(img, random.uniform(-self.hue, self.hue)), mask
+        return adjust_hue(img, random.uniform(-self.hue, self.hue)), mask
 
 
 class AdjustBrightness(object):
@@ -90,7 +91,7 @@ class AdjustBrightness(object):
 
     def __call__(self, img, mask):
         assert img.size == mask.size
-        return tf.adjust_brightness(img, random.uniform(1 - self.bf, 1 + self.bf)), mask
+        return adjust_brightness(img, random.uniform(1 - self.bf, 1 + self.bf)), mask
 
 
 class AdjustContrast(object):
@@ -99,7 +100,7 @@ class AdjustContrast(object):
 
     def __call__(self, img, mask):
         assert img.size == mask.size
-        return tf.adjust_contrast(img, random.uniform(1 - self.cf, 1 + self.cf)), mask
+        return adjust_contrast(img, random.uniform(1 - self.cf, 1 + self.cf)), mask
 
 
 class CenterCrop(object):
@@ -164,7 +165,7 @@ class RandomTranslate(object):
         if y_offset < 0:
             y_crop_offset = 0
 
-        cropped_img = tf.crop(
+        cropped_img = crop(
             img,
             y_crop_offset,
             x_crop_offset,
@@ -185,8 +186,8 @@ class RandomTranslate(object):
             padding_tuple = (abs(x_offset), abs(y_offset), 0, 0)
 
         return (
-            tf.pad(cropped_img, padding_tuple, padding_mode="reflect"),
-            tf.affine(
+            pad(cropped_img, padding_tuple, padding_mode="reflect"),
+            affine(
                 mask,
                 translate=(-x_offset, -y_offset),
                 scale=1.0,
@@ -204,7 +205,7 @@ class RandomRotate(object):
     def __call__(self, img, mask):
         rotate_degree = random.random() * 2 * self.degree - self.degree
         return (
-            tf.affine(
+            affine(
                 img,
                 translate=(0, 0),
                 scale=1.0,
@@ -213,7 +214,7 @@ class RandomRotate(object):
                 fillcolor=(0, 0, 0),
                 shear=0.0,
             ),
-            tf.affine(
+            affine(
                 mask,
                 translate=(0, 0),
                 scale=1.0,
