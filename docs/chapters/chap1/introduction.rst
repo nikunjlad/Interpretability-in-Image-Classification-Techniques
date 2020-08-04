@@ -5,11 +5,11 @@ Introduction
 .. toctree::
    :maxdepth: 4
 
-Once upon a time, during 1500 B.C. in ancient Egypt, the Egyptians were on the verge of a major invention, the invention
+Long ago, during 1500 B.C. in ancient Egypt, the Egyptians were on the verge of a major invention, the invention
 of sundials. How do we measure time? Back in the day, the measurement was not like how today's clocks measure time. In fact
-for 3 millenia or more the basic unit of time was he period of daylight. The Egyptians broke the period of sunrise to
+for 3 millenia or more the basic unit of time was the period of daylight. The Egyptians broke the period of sunrise to
 sunset in 12 parts, giving us the forerunner of today's hours. Unlike the constant length of hours as measured today by
-our clocks the Egyptian hour was not of constant length; infact it varied with seasons and also based on the length of the
+our clocks the Egyptian hour was not of constant length; infact it varied with seasons and was also based on the length of the
 day. It also varied from place to place on the surface of the Earth. Most importantly, time as a measurable concept
 effectively ceased during the time of darkness when there was no sunlight. The Egyptians did not account of the hours the
 light was not present.
@@ -19,7 +19,8 @@ waterclocks and candles. The first two of these utilized the flow of some substa
 steady fall in the height of the candle. All three provided a metaphor for time as something that flows continuously,
 and thus began to shape the way we think of time. Though their accuracy was never great, these devices not only provided
 a way to measure time without the need for the sun to be visible in the sky, they also provided the basis for a concept
-of time that did not depend upon the length of the day.
+of time that did not depend upon the length of the day. The evolution of time measuring device was revolutionary and
+ever since the early days mankind has caused a revolution in some form or another.
 
 As humans we experience a revolution every now and then in our lifetime. In the field of technology, we had our
 **First Industrial Revolution** during the 1780-1840 period where we transitioned from hand made goods to automated
@@ -45,7 +46,7 @@ I don't know if you have come across this word - "Computer Vision" earlier, but,
 heard Machine Learning and other buzz words. What exactly is Computer Vision? If I were to explain a 5-year old or a
 general population in particular what this is, then I would say -
 
-> **it's the science of making intelligent systems using images and videos**.
+| *it's the science of making intelligent systems using images and videos*.
 
 Yes, it is a science since there are a lot of algorithms involved and the field is expanding at an
 exponential rate. And since we primarily focus on Images and Videos and depth maps, it's called vision, pertaining to
