@@ -18,7 +18,7 @@ effectively ceased during the time of darkness when there was no sunlight. The E
 light was not present.
 
 .. figure:: ../../_static/sundial.jpg
-   :width: 700px
+   :width: 600px
 
    World's Largest Sundial at Jantar Mantar, India :raw-html:`<br />`
    *credits:* `Google Images <https://static.trip101.com/paragraph_media/pictures/000/027/426/large/SunDialJM.jpg?1460623577>`_
@@ -32,34 +32,65 @@ of time that did not depend upon the length of the day. The evolution of time me
 ever since the early days mankind has caused a revolution in some form or another.
 
 As humans we experience a revolution every now and then in our lifetime. In the field of technology, we had our
-**First Industrial Revolution** during the 1780-1840 period where we transitioned from hand made goods to automated
+`First Industrial Revolution <https://en.wikipedia.org/wiki/Industrial_Revolution>`_ during the 1780-1840 period where we transitioned from hand made goods to automated
 machines for increasing production and this lead to big shift in economy and lives. Mechanical machines were used which
 could work on potential energy and kinetic energy and which could help reduce human effort by harnessing the natural
-powers available. Likewise, we had our **Second Industrial Revolution** during the 1870-1920 period. In this revolution
+powers available.
+
+.. figure:: ../../_static/first_revolution.jpg
+   :width: 600px
+
+   First Industrial Revolution, Textiles :raw-html:`<br />`
+   *credits:* `Britannica <https://cdn.britannica.com/46/189446-050-B9B448DA/Women-working-machines-American-Woolen-Company-Boston-1912.jpg>`_
+
+Likewise, we had our `Second Industrial Revolution <https://en.wikipedia.org/wiki/Second_Industrial_Revolution>`_ during the 1870-1920 period. In this revolution
 we saw widespread adoption of new technologies like telegraph and railroad networks for transportation. Gas and Water
 supply systems were setup and likewise sewage treatment plants were installed. A majority of mechanical machinery were
-transitioned to electrified units where electricity was used. We then had the **Scientific Technological Revolution**
+transitioned to electrified units where electricity was used.
+
+.. figure:: ../../_static/second_revolution.jpg
+   :width: 600px
+
+   Second Industrial Revolution, Railroads :raw-html:`<br />`
+   *credits:* `Pinimg <https://i.pinimg.com/originals/c0/09/33/c0093342d5bb8660e71b2f6ab3392675.jpg>`_
+
+We then had the `Scientific Technological Revolution <https://en.wikipedia.org/wiki/Technological_revolution>`_
 from 1940-1970 period, where nationwide communications, electronic computers and space technology was developed.
-This revolution brought about changes like personal computers and which replaced bulky mainframe systems. We finally
-have the **Third Industrial Revolution** also called as **Digital Revolution** from 1975-2020 which marked the birth of
+This revolution brought about changes like personal computers and which replaced bulky mainframe systems.
+
+.. figure:: ../../_static/space.jpg
+   :width: 500px
+
+   Scientific Technological Revolution, Space Technology :raw-html:`<br />`
+   *credits:* `NASA <https://www.nasa.gov/centers/kennedy/images/content/662784main_saturnV.jpg>`_
+
+
+We finally have the `Third Industrial Revolution <https://en.wikipedia.org/wiki/The_Third_Industrial_Revolution>`_ also called as **Digital Revolution** from 1975-2020 which marked the birth of
 the internet, personal handheld devices, navigation systems and more sophisticated surveillance networks. This
 revolution is the one which saw the maximum amount of growth both economically and technologically for the entire world.
+
+.. figure:: ../../_static/third_revolution.jpg
+   :width: 600px
+
+   Third Industrial Revolution, Computers and Internet :raw-html:`<br />`
+   *credits:* `Dailydot <https://www.dailydot.com/wp-content/uploads/b8e/54/e0b23b40a24e3f20208dbefd48cd0219.jpg>`_
+
 We came across the term artificial intelligence and how it can change the way we operate in our lives. We are slowly
 transitioning from the **Digital Revolution** to the **A.I. Revolution** which will completely transform human experiences.
 
-This book is comprises of a particular part of research which helps us reason why AI works the way it works. As part of
+This book, comprises of a particular part of research which helps us reason why AI works the way it works. As part of
 the A.I. Revolution, it's important to understand the dark areas which causes mysterious human level results on
 complicated problems. Interpretability is very necessary for human understanding, and as humans we tend to unravel the
-complicated day-to-day processes so as to better understand our environment and conditions. We are embarassingly curious,
-by nature and tend to explore every area we possibly can. While sometimes, this may act against us, most of the time, it
-leads to suprising innovations and progress. While we can possibly take the results generated by the artifically developed
-machines for granted, it is human to know the underlying the principles which guides it's decisions.
+complicated day-to-day processes so as to better understand our environment and conditions. We are embarrassingly curious,
+by nature and tend to explore every area we possibly can. While sometimes, this may act against us, almost always, it
+leads to surprising innovations and breakthroughs. While we can possibly take the results generated by the artificially developed
+machines for granted, it is human to know the underlying principles which governs its decisions.
 
-The layout of this book is simple and as more research is done, it can be extended further with more experiments and
+This book has a simple structure and as more research is done, it can be extended further with more experiments and
 results. As for the layout of this book, we first touch upon what Computer Vision is, since that is the area we intend to
-explore. We would like to know how computer vision systems work internally, what causes it to produce near human inferences,
+explore. We would then like to know how computer vision systems work internally, what causes it to produce near-human level inferences,
 what are the various sub-domains of this vast field and the applications where we encounter it in our daily life. We then,
-understand what is Interpretability in general and its need in understanding black box models. We try to understand the bias
+understand what is interpretability in general and its need in understanding black box models. We try to understand the bias
 in AI which is prevalent due to the inherent nature of human bias(which apparently gets passed on to machines in their underlying
 algorithms). Since the field of computer vision is very vast, we decide to apply our interpretability methods on a specific
 domain, in our case Image Segmentation. The following set of chapters help us get a fair idea of Semantic, Instance and
