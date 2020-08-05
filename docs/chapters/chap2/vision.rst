@@ -17,6 +17,7 @@ But, is that all about this field? That doesn't rather cover the entire spectrum
 to go about some important and specific areas of Computer Vision along with their applications and examples.
 
 .. figure:: ../../_static/cv.jpg
+   :align: center
    :width: 600px
 
    Point Cloud Renders of a Landscape :raw-html:`<br />`

@@ -18,6 +18,7 @@ a lot of research is done in this domain. Some popular architectures using CNNs 
 **Residual Networks (ResNets)**, **GoogleNet**, **VGG-16**, etc.
 
 .. figure:: ../../../_static/classification.gif
+   :align: center
    :width: 700px
 
    Intuition of a Binary Image Classification Problem :raw-html:`<br />`

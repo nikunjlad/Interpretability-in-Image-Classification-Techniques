@@ -39,6 +39,7 @@ could work on potential energy and kinetic energy and which could help reduce hu
 powers available.
 
 .. figure:: ../../_static/first_revolution.jpg
+   :align: center
    :width: 600px
 
    First Industrial Revolution, Textiles :raw-html:`<br />`
@@ -50,6 +51,7 @@ supply systems were setup and likewise sewage treatment plants were installed. A
 transitioned to electrified units where electricity was used.
 
 .. figure:: ../../_static/second_revolution.jpg
+   :align: center
    :width: 600px
 
    Second Industrial Revolution, Railroads :raw-html:`<br />`
@@ -60,6 +62,7 @@ from 1940-1970 period, where nationwide communications, electronic computers and
 This revolution brought about changes like personal computers and which replaced bulky mainframe systems.
 
 .. figure:: ../../_static/space.jpg
+   :align: center
    :width: 500px
 
    Scientific Technological Revolution, Space Technology :raw-html:`<br />`
@@ -71,6 +74,7 @@ the internet, personal handheld devices, navigation systems and more sophisticat
 revolution is the one which saw the maximum amount of growth both economically and technologically for the entire world.
 
 .. figure:: ../../_static/third_revolution.jpg
+   :align: center
    :width: 600px
 
    Third Industrial Revolution, Computers and Internet :raw-html:`<br />`
