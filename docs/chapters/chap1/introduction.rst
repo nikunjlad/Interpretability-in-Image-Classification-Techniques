@@ -5,6 +5,9 @@ Introduction
 .. toctree::
    :maxdepth: 4
 
+.. role:: raw-html(raw)
+   :format: html
+
 Long ago, during 1500 B.C. in ancient Egypt, the Egyptians were on the verge of a major invention, the invention
 of sundials. How do we measure time? Back in the day, the measurement was not like how today's clocks measure time. In fact
 for 3 millenia or more the basic unit of time was the period of daylight. The Egyptians broke the period of sunrise to
@@ -13,6 +16,12 @@ our clocks the Egyptian hour was not of constant length; infact it varied with s
 day. It also varied from place to place on the surface of the Earth. Most importantly, time as a measurable concept
 effectively ceased during the time of darkness when there was no sunlight. The Egyptians did not account of the hours the
 light was not present.
+
+.. figure:: ../../_static/sundial.jpg
+   :width: 700px
+
+   World's Largest Sundial at Jantar Mantar, India :raw-html:`<br />`
+   *credits:* `Google Images <https://static.trip101.com/paragraph_media/pictures/000/027/426/large/SunDialJM.jpg?1460623577>`_
 
 The need to measure time independently of the sun eventually gave rise to various devices, most notably sandglasses,
 waterclocks and candles. The first two of these utilized the flow of some substance to measure time, the latter the
