@@ -11,9 +11,10 @@ Contents
    :maxdepth: 2
 
    chapters/chap1/introduction
-   chapters/chap2/interpretability
-   chapters/chap3/segmentation
-   chapters/chap4/algorithms
+   chapters/chap2/vision
+   chapters/chap3/interpretability
+   chapters/chap4/segmentation
+   chapters/chap5/algorithms
 
 
 Indices and tables

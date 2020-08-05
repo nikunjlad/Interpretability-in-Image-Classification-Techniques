@@ -6,6 +6,18 @@ Understanding Interpretability
 .. toctree::
    :maxdepth: 2
 
+Everyone wants to do Machine Learning, Data Science, Deep Learning. I know,
+saying out loud like - "I am a Deep Learning Engineer", itself gives the best of us goosebumps. While, I too was in the
+same situation until a few years ago, I won't complain about people being in the same boat now. However, Machine Learning is
+not Computer Vision. A lot of people confuse these terms. AI, ML, DL, etc. are commonly used acronyms. Its however
+important to know the difference between them. Artificial intelligence is a big domain and a field comprising of many
+sub-fields. In fact more than a field, it is an idea to be more subtle. Anything which can help mimic human brain in
+terms of behaviour and intelligence is an artificially intelligent system. Intelligence which is artificial in nature and analogous to
+humans. Machine Learning is a sub domain of Artificial Intelligence which is basically using a set of algorithms to
+solve complex real world problems. Statistical Learning is a subset of Machine learning which deals with statistical
+analysis and uses traditional algorithms for its computations. These algorithms include Support Vector Machines (SVM),
+Linear Regression, Logistic Regression, Naive-Bayes, etc.
+
 An important question to ask when pursuing research is **Why?** followed by **How?**. Why does this algorithm work?
 How different is it from other algorithms? What is Image Segmentation in contrast to Object Detection and what goes inside
 the black box models? More specifically, there was one question always running in the back of my mind - "How the heck
