@@ -72,8 +72,8 @@ revolution is the one which saw the maximum amount of growth both economically a
 .. figure:: ../../_static/third_revolution.jpg
    :width: 600px
 
-   Third Industrial Revolution, Computers and Internet :raw-html:`<br />`
-   *credits:* `Dailydot <https://www.dailydot.com/wp-content/uploads/b8e/54/e0b23b40a24e3f20208dbefd48cd0219.jpg>`_
+.. centered:: Third Industrial Revolution, Computers and Internet :raw-html:`<br />`
+.. centered:: *credits:* `Dailydot <https://www.dailydot.com/wp-content/uploads/b8e/54/e0b23b40a24e3f20208dbefd48cd0219.jpg>`_
 
 We came across the term artificial intelligence and how it can change the way we operate in our lives. We are slowly
 transitioning from the **Digital Revolution** to the **A.I. Revolution** which will completely transform human experiences.
