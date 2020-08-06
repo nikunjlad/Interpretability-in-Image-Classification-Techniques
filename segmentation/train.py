@@ -1,12 +1,5 @@
-import os
-import yaml
-import time
-import shutil
-import torch
-import random
-import argparse
+import os, yaml, time, shutil, torch, random, argparse, warnings
 import numpy as np
-import warnings
 from torch.utils import data
 from tqdm import tqdm
 

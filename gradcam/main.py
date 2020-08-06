@@ -162,7 +162,7 @@ def main(ctx):
 
 
 @main.command()  # this is a click command. Infact the first click command. It has below optional arguments
-@click.option("-i", "--image-paths", type=str, required=True)  # ask for image paths, multiple taken in as tuple
+@click.option("-i", "--image-paths", type=str, required=True)
 @click.option("-a", "--arch", type=click.Choice(model_names), required=True)  # model to be used
 @click.option("-t", "--target-layer", type=str, required=True)  # layer to be visualized
 @click.option("-k", "--topk", type=int, default=3)  # top k most relevant searches to be returned
