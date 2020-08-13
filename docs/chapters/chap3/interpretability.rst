@@ -97,7 +97,7 @@ Yes, lack of interpretability can be fatal to humans. Let me give a few examples
 .. raw:: html
 
     <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; height: auto;">
-        <iframe src="https://youtu.be/LfmAG4dk-rU" frameborder="0" allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe>
+        <iframe src="https://www.youtube.com/embed/LfmAG4dk-rU" frameborder="0" allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe>
     </div>
 
 link: https://www.thedrive.com/news/33789/autopilot-blamed-for-teslas-crash-into-overturned-truck
@@ -117,5 +117,4 @@ link: https://www.nbcnews.com/video/self-driving-uber-crash-that-killed-pedestri
 2. Improve the classifier
 3. Learn from the algorithm itself about it's decisions
 4. Get insights
-
 
