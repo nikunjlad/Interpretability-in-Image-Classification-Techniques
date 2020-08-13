@@ -1,12 +1,15 @@
 
-Image Classification
-====================
+2.1 Image Classification
+========================
 
 .. toctree::
    :maxdepth: 2
 
 .. role:: raw-html(raw)
    :format: html
+
+2.1.1 What is Image Classification?
+-----------------------------------
 
 Image Classification is one of the most popular application of computer vision. The idea is quite simple and there are
 many techniques to help us achieve it. While I won't be covering the various techniques which help us achieve Image
@@ -24,6 +27,9 @@ a lot of research is done in this domain. Some popular architectures using CNNs 
    Intuition of a Binary Image Classification Problem :raw-html:`<br />`
    *credits:* `becominghuman <https://becominghuman.ai/building-an-image-classifier-using-deep-learning-in-python-totally-from-a-beginners-perspective-be8dbaf22dd8>`_
 
+2.1.2 Applications of Image Classification Algorithms
+-----------------------------------------------------
+
 We come across image classification algorithms in our daily lives and yet we don't really know that we have been using
 them since a long time. The biometric face recognition and Iris classification on your mobile phone is nothing but
 Image Classification under the hood. Figuring out whether a face is the real owner or the Iris is the one registered on
@@ -39,6 +45,9 @@ and they have been around for quite a while.
 
    Iris Detection and Classification in Samsung Galaxy Note 8 :raw-html:`<br />`
    *credits:* `daumcdn <https://img1.daumcdn.net/thumb/R720x0.q80/?scode=mtistory2&fname=http%3A%2F%2Fcfile5.uf.tistory.com%2Fimage%2F992BEE385E37A30315CA3D>`_
+
+2.1.3 Challenges faced by Image Classification Algorithms
+---------------------------------------------------------
 
 One important thing to note with respect to Image Classification is that, given an image, it does not localize any
 particular object in the image. What do we mean by localize? By localization, we mean the location of the object in the

@@ -1,8 +1,10 @@
 
 
-What is Computer Vision?
-========================
+2. What is Computer Vision?
+===========================
 
+.. role:: raw-html(raw)
+   :format: html
 
 I don't know if you have come across this word - "Computer Vision" earlier, but, I am pretty sure you must have
 heard Machine Learning and other buzz words. What exactly is Computer Vision? If I were to explain a 5-year old or a
@@ -32,4 +34,3 @@ to go about some important and specific areas of Computer Vision along with thei
    pose/pose
    captioning/captioning
    synthesis/synthesis
-   visualqa/visualqa

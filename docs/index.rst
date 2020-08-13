@@ -7,7 +7,7 @@ Contents
 --------
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
 
    chapters/chap1/introduction
    chapters/chap2/vision

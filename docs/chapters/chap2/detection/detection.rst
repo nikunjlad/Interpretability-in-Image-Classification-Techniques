@@ -1,12 +1,15 @@
 
-Object Detection
-================
+2.2 Object Detection
+====================
 
 .. toctree::
    :maxdepth: 2
 
 .. role:: raw-html(raw)
    :format: html
+
+2.2.1 What is Object Detection?
+-------------------------------
 
 Object detection is yet another interesting domain of Computer Vision. It builds upon the idea of
 `Image Classification <https://interpretability-in-image-segmentation-techniques.readthedocs.io/en/latest/chapters/chap2/classification/classification.html>`_.
@@ -25,6 +28,9 @@ are present in the house, we would use object detection.
 
    Object Detection in Real Time :raw-html:`<br />`
    *credits:* `medium <https://miro.medium.com/max/1000/1*NLnnf_M4Nlm4p1GAWrWUCQ.gif>`_
+
+2.2.2 Applications of Object Detection Algorithms
+-------------------------------------------------
 
 Now that you have a good higher level intuition of what object detection algorithms are and the way they work, can you
 think of any instances where you must have come across object detection algorithms in your daily life? I assume everyone
@@ -45,6 +51,9 @@ driving cars to sign language detection, etc.
 
    Facebook autotagging localized face suggestions :raw-html:`<br />`
    *credits:* `ibxk <https://img.ibxk.com.br/2020/01/30/30141154010379.jpg>`_
+
+2.2.3 Challenges faced by Object Detection Algorithms
+-----------------------------------------------------
 
 While object detection is powerful then image classification, it still has some caveats. Say, we are trying to determine
 the **EXACT** location in the human body which has cancer. I deliberately strongly typed exact, because Object detection

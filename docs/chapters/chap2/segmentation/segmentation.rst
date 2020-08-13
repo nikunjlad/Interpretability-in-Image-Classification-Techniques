@@ -1,9 +1,15 @@
 
-Image Segmentation
-==================
+2.3 Image Segmentation
+======================
 
 .. toctree::
    :maxdepth: 2
+
+.. role:: raw-html(raw)
+   :format: html
+
+2.3.1 What is Image Segmentation?
+---------------------------------
 
 Remember as a kid, when learning how to use scissors, we were made to cut simple geometric shapes - circles, triangles,
 squares, etc drawn on a single sheet of drawing paper. Consider that single sheet of paper as an image; and consider
@@ -18,6 +24,9 @@ of the image. This is the simple intuition behind how image segmentation works.
 
    Image Segmentation using Mask R-CNN :raw-html:`<br />`
    *credits:* `pyimagesearch <https://s3-us-west-2.amazonaws.com/static.pyimagesearch.com/opencv-mask-rcnn/mask_rcnn_example02.gif>`_
+
+2.3.2 Applications of Image Segmentation Algorithms
+---------------------------------------------------
 
 To better understand segmentation, if I ask you what are the important (salient) elements you can figure out from the
 above image, what would you say? Seeing the above image, what does our eyes capture in a fraction of a second. Our eyes
@@ -50,7 +59,11 @@ around the entire concept.
 
 Another major application of image segmentation methods is in medical image analysis. Imagine a person has a brain tumor.
 How big is the tumor? For an operation, how can the surgery be precise and accurate so as to avoid slicing any other vital
-part of the brain? Such challenges are tackled by image segmentation algorithms. However, currently these algorithms are
-not robust to occlusions and noise and hence they still have a long way to go before being perfect for full fledged
-deployment without human supervision.
+part of the brain? Such challenges are tackled by image segmentation algorithms.
+
+2.3.3 Challenges faced by Image Segmentation Algorithms
+-------------------------------------------------------
+
+However, currently these algorithms are not robust to occlusions and noise and hence they still have a long way to go
+before being perfect for full fledged deployment without human supervision.
 
