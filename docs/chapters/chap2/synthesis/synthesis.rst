@@ -8,7 +8,7 @@
 .. role:: raw-html(raw)
    :format: html
 
-2.6.1 What is image synthesis?
+2.6.1 What is Image Synthesis?
 ------------------------------
 
 Like Image captioning, Image synthesis too is a fairly new topic and a much less explored area. If you recall, in image

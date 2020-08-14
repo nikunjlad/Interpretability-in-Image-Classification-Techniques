@@ -14,6 +14,7 @@ Contents
    chapters/chap3/interpretability
    chapters/chap4/segmentation
    chapters/chap5/algorithms
+   zbibliography
 
 
 Indices and tables
