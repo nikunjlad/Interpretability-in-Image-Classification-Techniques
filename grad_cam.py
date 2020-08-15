@@ -23,7 +23,7 @@ class _BaseWrapper:
 
     def forward(self, image):
         self.image_shape = image.shape[2:]  # get the image shape so as to resize the feature maps later on
-        self.logits = self.model(image)  # get the logits given the images
+        self.logits = self.model(image) # get the logits given the images
         self.score = self.logits[:, self.logits.max(1)[-1]].squeeze().detach()
         self.probs = F.softmax(self.logits, dim=1)  # a tensor of probabilities for each class. Adds up to 1
         return self.probs.sort(dim=1, descending=True)  # ordered results and indices are returned as a tuple

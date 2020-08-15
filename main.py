@@ -3,7 +3,7 @@ import click
 import torch
 import torch.nn.functional as F
 from torchvision import models
-from utils import get_classtable, load_images, save_gradient, save_gradcam, save_sensitivity
+from utility import get_classtable, load_images, save_gradient, save_gradcam, save_sensitivity
 
 from grad_cam import (
     BackPropagation,
@@ -121,6 +121,7 @@ class Visualizations:
 
         gcam = GradCAM(model=self.model, target_layer=self.target_layer, gradcampp=self.method)
         probs, ids = gcam.forward(self.images)
+        # print(ids)
 
         gbp = GuidedBackPropagation(model=self.model)
         _ = gbp.forward(self.images)
@@ -194,7 +195,7 @@ def vis(image_paths, target_layer, arch, topk, output_dir, cuda, method):
 
     """
     Common usage:
-    1. Wrap your model with visualization classes defined in grad_cam.py
+    1. Wrap your model with visualization classes defined in grad_cam_segs.py
     2. Run forward() with images
     3. Run backward() with a list of specific classes
     4. Run generate() to export results

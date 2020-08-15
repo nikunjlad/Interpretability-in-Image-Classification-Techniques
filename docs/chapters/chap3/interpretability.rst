@@ -68,7 +68,6 @@ can clearly discern about the **how** of the situation. But, can we explain *why
 
 3.2 Understanding Explainability and its relation with Interpretability
 -----------------------------------------------------------------------
-l2: https://www.kdnuggets.com/2018/12/machine-learning-explainability-interpretability-ai.html#:~:text=Interpretability%20is%20about%20the%20extent,be%20observed%20within%20a%20system.&text=Explainability%2C%20meanwhile%2C%20is%20the%20extent,be%20explained%20in%20human%20terms.
 
 While we are on the topic of unraveling the truth of what goes inside deep neural networks, it is important to note that
 **interpretability** is not **explainability**. Both the terms are used interchangeably often and it's necessary to understand

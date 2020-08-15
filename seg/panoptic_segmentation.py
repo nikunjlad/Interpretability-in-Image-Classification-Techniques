@@ -11,7 +11,7 @@ import numpy as np
 from detectron2.config import get_cfg
 from detectron2.data.detection_utils import read_image
 from detectron2.utils.logger import setup_logger
-from seg.utils import VisualizationDemo
+from utility import VisualizationDemo
 
 # constants
 WINDOW_NAME = "COCO detections"
@@ -85,6 +85,7 @@ if __name__ == "__main__":
         for path in tqdm.tqdm(args.input, disable=not args.output):
             # use PIL, to be consistent with evaluation
             img = read_image(path, format="BGR")
+            print(img.shape)
             start_time = time.time()
             predictions, visualized_output = demo.run_on_image(img)
             logger.info(

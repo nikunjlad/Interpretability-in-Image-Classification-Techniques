@@ -3,8 +3,6 @@
 4. Image Segmentation Techniques
 ================================
 
-Contents
---------
 
 .. toctree::
    :maxdepth: 2
@@ -14,8 +12,5 @@ Contents
    panoptic/panoptic
 
 
-
-Classification vs Object Detection vs Segmentation. How different are they from each other?
--------------------------------------------------------------------------------------------
 
 

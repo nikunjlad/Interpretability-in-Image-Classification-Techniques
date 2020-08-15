@@ -10,9 +10,7 @@ from imutils.video import WebcamVideoStream
 """
 Semantic Segmentation models
 
-1. fcn_resnet50
 2. fcn_resnet101
-3. deeplabv3_resnet50
 4. deeplabv3_resnet101
 
 """
@@ -66,6 +64,7 @@ class SemanticSegmentation:
         # for all the 21 classes assign a color to the corresponding pixel value
         for l in range(0, nc):
             idx = image == l
+            print(np.any(idx))
             r[idx] = label_colors[l, 0]
             g[idx] = label_colors[l, 1]
             b[idx] = label_colors[l, 2]
@@ -88,8 +87,10 @@ class SemanticSegmentation:
 
         # apply transformation on the input image and and add an additional dimension before computing
         inp = trf(self.image).unsqueeze(0).to(self.dev)
-        out = self.model(inp)['out']  # apply model on the input tensor
-        om = torch.argmax(out.squeeze(), dim=0).detach().cpu().numpy()  # acquire output tensor and convert to numpy
+        out = self.model(inp)  # apply model on the input tensor
+        print(out["aux"].shape)
+        om = torch.argmax(out['out'].squeeze(), dim=0).detach().cpu().numpy()  # acquire output tensor and convert to numpy
+        print(om.shape)
 
         # create segmentation map
         rgb, original = self.decode_segmap(om, orig=self.image)
