@@ -146,7 +146,8 @@ Some important reasons why interpretability is required in Computer Vision:
    A bicycle mechanism :raw-html:`<br />`
    *credits:* `stringbike <https://www.stringbike.com/_img/magic-stringdrive-01.gif>`_
 
-.. rubric:: Citations
+Citations
+^^^^^^^^^
 
 .. [1] `https://en.wikipedia.org/wiki/Interpretability <https://en.wikipedia.org/wiki/Interpretability>`_
 .. [2] `https://www.kdnuggets.com/2018/12/machine-learning-explainability-interpretability-ai.html <https://www.kdnuggets.com/2018/12/machine-learning-explainability-interpretability-ai.html#:~:text=Interpretability%20is%20about%20the%20extent,be%20observed%20within%20a%20system.&text=Explainability%2C%20meanwhile%2C%20is%20the%20extent,be%20explained%20in%20human%20terms.>`_
