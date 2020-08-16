@@ -1,7 +1,7 @@
 
 
-6. Observations
-===============
+6. Observations and Conclusion
+==============================
 
 .. toctree::
    :maxdepth: 2
