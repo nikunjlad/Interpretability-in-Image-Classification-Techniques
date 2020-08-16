@@ -12,8 +12,6 @@ warnings.filterwarnings("ignore")
 Instance Segmentation models
 
 1. maskrcnn_resnet50_fpn
-2. fasterrcnn_resnet50_fpn
-3. keypointrcnn_resnet50_fpn
 
 """
 instance_models = sorted(
@@ -113,7 +111,7 @@ class InstanceSegmentation:
 
         return masks, pred_boxes, pred_class
 
-    def segment(self, rect_th=1, text_size=0.60, text_th=1):
+    def segment(self, rect_th=1, text_size=0.30, text_th=1):  # 1    0.6   1
         # 1. get the masks, boxes and predicted classes
         masks, boxes, pred_cls = self.predict()
 
@@ -147,11 +145,13 @@ def instance(image_path, arch, threshold, output, show_fig, cuda):
     device = get_device(cuda)
     image = cv2.imread(image_path)
 
-    aspect = image.shape[1] / image.shape[0]
-    if aspect > 0:
-        image = cv2.resize(image, (800, int(800 / aspect)), interpolation=cv2.INTER_LANCZOS4)
-    else:
-        image = cv2.resize(image, (600, int(600 / aspect)), interpolation=cv2.INTER_LANCZOS4)
+    # aspect = image.shape[1] / image.shape[0]
+    # if aspect > 0:
+    #     image = cv2.resize(image, (227, int(800 / aspect)), interpolation=cv2.INTER_LANCZOS4)
+    # else:
+    #     image = cv2.resize(image, (600, int(600 / aspect)), interpolation=cv2.INTER_LANCZOS4)
+
+    image = cv2.resize(image, (227,227), interpolation=cv2.INTER_LANCZOS4)
 
     # 2. load the model
     try:
@@ -160,14 +160,8 @@ def instance(image_path, arch, threshold, output, show_fig, cuda):
 
         i = InstanceSegmentation(image, model, threshold, arch, device)
         img = i.segment()
-        cv2.putText(image, "Original Image", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 1)
-        cv2.putText(img, "Instance Segmented using {}".format(arch), (10, 30), cv2.FONT_HERSHEY_SIMPLEX,
-                    0.70, (0, 0, 255), 1)
-
-        if aspect > 0:
-            out = np.vstack((image,img))
-        else:
-            out = np.hstack((image, img))
+        # cv2.putText(img, "Instance Segmented using {}".format(arch), (10, 30), cv2.FONT_HERSHEY_SIMPLEX,
+        #             0.70, (0, 0, 255), 1)   #  (10, 30)      0.75     1
 
         img_name = image_path.split(".")[0].split("/")[-1]
         save_path = os.path.join(output, img_name)
@@ -176,11 +170,11 @@ def instance(image_path, arch, threshold, output, show_fig, cuda):
             os.mkdir(save_path)
 
         save_name = arch + "_" + img_name + "_.png"
-        cv2.imwrite(os.path.join(save_path, save_name), out)
+        cv2.imwrite(os.path.join(save_path, save_name), img)
 
         if show_fig:
             print("Displaying image")
-            cv2.imshow("Instance Segmentation", out)
+            cv2.imshow("Instance Segmentation", img)
             cv2.waitKey(0)
             cv2.destroyAllWindows()
     except Exception as e:

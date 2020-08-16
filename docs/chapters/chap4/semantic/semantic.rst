@@ -255,6 +255,9 @@ top of Atrous convolutions to reduce the number of computations.
    DeepLab-v3+ using the encoder-decoder architecture :raw-html:`<br />`
    *credits:* `nanonets <https://nanonets.com/blog/content/images/2020/08/1_Llh9dQ1ZMBqPMOJSf7WaBQ.png>`__
 
+4.1.3 Our Observations for Semantic Segmentation
+------------------------------------------------
+
 
 .. rubric:: Citations
 

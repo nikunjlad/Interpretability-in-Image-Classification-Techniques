@@ -1,4 +1,4 @@
-import os
+import os,cv2
 import click
 import torch
 import torch.nn.functional as F
@@ -40,7 +40,7 @@ model_names = sorted(
 class Visualizations:
 
     def __init__(self, model=None, images=None, topk=3, classes=None, arch="resnet101",
-                 target_layer="layer4", method="gradcam", raw_images=None, output_dir="./results"):
+                 target_layer="layer4", method="gradcam", raw_images=None, output_dir="./results", raw_name=None):
         self.model = model
         self.images = images
         self.topk = topk
@@ -50,6 +50,7 @@ class Visualizations:
         self.method = method
         self.raw_images = raw_images
         self.output_dir = output_dir
+        self.raw_name = raw_name
 
     def vanilla_backpropagation(self):
         print("Vanilla Backpropagation:")
@@ -142,6 +143,7 @@ class Visualizations:
                 save_gradcam(filename=os.path.join(self.output_dir, "{}-{}-{}-{}-{}.png".format(
                     j, self.arch, self.method, self.target_layer, self.classes[ids[j, i]]),),
                              gcam=regions[j, 0], raw_image=self.raw_images[j])
+                cv2.imwrite(os.path.join(self.output_dir, self.raw_name), self.raw_images[j])
 
                 # Guided Grad-CAM
                 save_gradient(filename=os.path.join(self.output_dir, "{}-{}-guided_{}-{}-{}.png".format(
@@ -188,7 +190,8 @@ def vis(image_paths, target_layer, arch, topk, output_dir, cuda, method):
     # get a list of transformed and original raw images
     images, raw_images = load_images(image_paths)
     images = torch.stack(images).to(device)  # stack the transformed and processed images and send to device
-    output_dir = os.path.join(output_dir, image_paths.split("/")[-1].split(".")[0])
+    raw_name = image_paths.split("/")[-1].split(".")[0]
+    output_dir = os.path.join(output_dir, raw_name)
 
     if not os.path.exists(output_dir):
         os.mkdir(output_dir)
@@ -201,7 +204,7 @@ def vis(image_paths, target_layer, arch, topk, output_dir, cuda, method):
     4. Run generate() to export results
     """
     v = Visualizations(model=model, images=images, topk=topk, classes=classes, arch=arch, target_layer=target_layer,
-                       method=method, raw_images=raw_images, output_dir=output_dir)
+                       method=method, raw_images=raw_images, output_dir=output_dir, raw_name=raw_name)
     if method == "vanilla":
         v.vanilla_backpropagation()
     elif method == "deconv":
@@ -224,7 +227,6 @@ def occlusion(image_paths, arch, topk, stride, n_batches, output_dir, cuda):
     """
     Generate occlusion sensitivity maps
     """
-
     device = get_device(cuda)
 
     # Synset words

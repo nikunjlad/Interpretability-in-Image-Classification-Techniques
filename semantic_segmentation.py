@@ -62,7 +62,6 @@ class SemanticSegmentation:
         # for all the 21 classes assign a color to the corresponding pixel value
         for l in range(0, nc):
             idx = image == l
-            print(np.any(idx))
             r[idx] = label_colors[l, 0]
             g[idx] = label_colors[l, 1]
             b[idx] = label_colors[l, 2]
@@ -79,16 +78,14 @@ class SemanticSegmentation:
 
     def segment(self):
         # define the transformations we need to apply on the image
-        trf = T.Compose([T.Resize(640),
+        trf = T.Compose([T.Resize(size=(227, 227)),
                          T.ToTensor(),
                          T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])])
 
         # apply transformation on the input image and and add an additional dimension before computing
         inp = trf(self.image).unsqueeze(0).to(self.dev)
         out = self.model(inp)  # apply model on the input tensor
-        print(out["aux"].shape)
         om = torch.argmax(out['out'].squeeze(), dim=0).detach().cpu().numpy()  # acquire output tensor and convert to numpy
-        print(om.shape)
 
         # create segmentation map
         rgb, original = self.decode_segmap(om, orig=self.image)
@@ -189,10 +186,8 @@ def semantic(image_path, arch, show_fig, output, cuda):
     rgba, orig = s.segment()
 
     # overlay descriptive texts on the original and the segmented image
-    cv2.putText(orig, "Original Image", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 255), 2)
-    cv2.putText(rgba, "Semantic Segmented using {}".format(str(mdl_name(arch))), (10, 30),
-                cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 255), 2)
-    out = np.vstack((orig, rgba))
+    # cv2.putText(rgba, "Semantic Segmented using {}".format(str(mdl_name(arch))), (10, 30),
+    #             cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 255), 2)
 
     img_name = image_path.split(".")[0].split("/")[-1]
     save_path = os.path.join(output, img_name)
@@ -201,7 +196,7 @@ def semantic(image_path, arch, show_fig, output, cuda):
         os.mkdir(save_path)
 
     save_name = str(mdl_name(arch)) + "_" + img_name + "_semantic_.png"
-    cv2.imwrite(os.path.join(save_path, save_name), out)
+    cv2.imwrite(os.path.join(save_path, save_name), rgba)
 
     # display the semantic segmented map
     if show_fig:
