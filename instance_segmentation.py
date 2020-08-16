@@ -124,8 +124,6 @@ class InstanceSegmentation:
             cv2.rectangle(self.img, boxes[i][0], boxes[i][1], color=(0, 255, 0), thickness=rect_th)
             cv2.putText(self.img, pred_cls[i], boxes[i][0], cv2.FONT_HERSHEY_SIMPLEX, text_size, (0, 255, 0),
                         thickness=text_th)
-            cv2.putText(self.img, "Instance Segmented using {}".format(self.arch), (10, 30),
-                        cv2.FONT_HERSHEY_SIMPLEX, text_size, (0, 0, 255), text_th)
 
         return self.img
 
@@ -162,6 +160,9 @@ def instance(image_path, arch, threshold, output, show_fig, cuda):
 
         i = InstanceSegmentation(image, model, threshold, arch, device)
         img = i.segment()
+        cv2.putText(image, "Original Image", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 1)
+        cv2.putText(img, "Instance Segmented using {}".format(arch), (10, 30), cv2.FONT_HERSHEY_SIMPLEX,
+                    0.70, (0, 0, 255), 1)
 
         if aspect > 0:
             out = np.vstack((image,img))

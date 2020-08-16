@@ -46,6 +46,7 @@ and they have been around for quite a while.
    Iris Detection and Classification in Samsung Galaxy Note 8 :raw-html:`<br />`
    *credits:* `daumcdn <https://img1.daumcdn.net/thumb/R720x0.q80/?scode=mtistory2&fname=http%3A%2F%2Fcfile5.uf.tistory.com%2Fimage%2F992BEE385E37A30315CA3D>`_
 
+
 2.1.3 Challenges faced by Image Classification Algorithms
 ---------------------------------------------------------
 

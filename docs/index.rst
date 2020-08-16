@@ -7,19 +7,10 @@ Contents
 --------
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 5
 
    chapters/chap1/introduction
    chapters/chap2/vision
    chapters/chap3/interpretability
    chapters/chap4/segmentation
    chapters/chap5/algorithms
-   zbibliography
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
