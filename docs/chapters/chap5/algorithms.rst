@@ -4,7 +4,7 @@
 
 Interpretability in Computer Vision requires algorithms which can help us understand the nuts and bolts of how deep
 neural nets work. More specifically, we would like to visualize what the network seeing and how does it see. We discuss
-3 algorithms which we explored as part of our effort to interpret image segmentation algorithms
+2 algorithms which we explored as part of our effort to interpret image segmentation algorithms
 
 .. admonition:: Note
 
@@ -18,7 +18,6 @@ neural nets work. More specifically, we would like to visualize what the network
 
    gradcam/gradcam
    gradcampp/gradcampp
-   scorecam/scorecam
 
 
 

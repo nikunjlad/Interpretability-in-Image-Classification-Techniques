@@ -32,7 +32,6 @@ In this chapter we dwelve deeper into Image Segmentation and specifically explor
 We will cover the algorithms which we used for our experiments and try to give an intuition of how things work under the hood
 in a minimal way.
 
-
 .. toctree::
    :maxdepth: 4
 
