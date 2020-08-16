@@ -4,8 +4,6 @@ import matplotlib.pyplot as plt
 import torch, os, time, click, sys, cv2
 import torchvision.transforms as T
 import numpy as np
-from parallel import AcquireVideo, DisplayVideo
-from imutils.video import WebcamVideoStream
 
 """
 Semantic Segmentation models
@@ -239,32 +237,6 @@ def analysis(image_path, arch1, arch2, device, mean_over, analysis_type):
     else:
         print("No analysis mentioned!")
 
-    sys.exit(1)
-
-
-@main.command()
-@click.option("-a", "--arch", type=click.Choice(semantic_models), required=True)
-@click.option("--cuda/--cpu", default=True)
-def streaming(arch, cuda):
-    device = get_device(cuda)
-    model = models.segmentation.__dict__[arch](pretrained=True).eval()
-    model.to(device)
-    s = SemanticSegmentation(model, show_orig=False, dev=device, arch_name=arch, stream=True)
-    vg = AcquireVideo(0).start()
-    vs = DisplayVideo(vg.frame).start()
-
-    while True:
-        img = Image.fromarray(np.uint8(vg.read()))
-        s.image = img
-        vs.frame = s.segment()
-        # cv2.imshow("real", rgb)
-
-        if vg.stopped or vs.stopped:
-            vg.stop()
-            vs.stop()
-            break
-
-    cv2.destroyAllWindows()
     sys.exit(1)
 
 
