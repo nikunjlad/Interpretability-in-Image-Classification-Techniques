@@ -73,12 +73,6 @@ visualizes gradients with respect to image and it has a special property where n
 passing through RELU layers. This causes only those pixels to stand out which were detected by neurons and not the ones
 which were suppressed by neurons.
 
-.. figure:: ../../../_static/gradcam.png
-   :align: center
-   :width: 600px
-
-   Grad-CAM Architecture :raw-html:`<br />`
-
 On the contrary, Grad-CAM visualizations are more interpretable through correlation
 with occlusion maps. Another important drawback of deep Neural Networks are its vulnerability to adversarial noise.
 Grad-CAM is robust to adversarial noise. Grad-CAM also helps detect and remove bias in datasets. For instance, if a
