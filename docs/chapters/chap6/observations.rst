@@ -53,5 +53,34 @@ both cars while Grad-CAM fails to do so.
 
 In case of the boat image, semantic FCN highlights the mast of the ship with a small red patch. Likewise, mask-rcnn based instance maps too
 mask both the boats uniquely and entirely with great detail. This can be verified by the Grad-CAM++ heatmaps, where we can see the a significant
-amount of focus being given to entire boat along with its mast not to forget the smaller boat as well.
+amount of focus being given to entire boat along with its mast not to forget the smaller boat as well. As for seagulls, Grad-CAM++ maps show
+a larger coverage in terms of attention. Both the seagulls have their body and feathers as part of the heatmap visualization. However, Grad-CAM
+shows just one of them being properly looked at by the network. The instance segmentation map is once again very crisp and precise while semantic
+maps are coarse.
 
+.. figure:: ../../_static/observation2.png
+   :align: center
+   :width: 800px
+
+   Grad-CAM and Grad-CAM++ visualizations of ResNet-101 network for layer4 along with Segmentation outputs :raw-html:`<br />`
+
+Let's look at another set of examples which will help us establish that the segmentation maps are consistent with the Grad-CAM visualizations.
+Consider the above image. Given an image of people very close to each other, semantic segmentation does a single mask as usual, nothing fancy.
+However, instance segmentation failed to identify the instances as 2 separate entities. Grad-CAM and Grad-CAM++ maps too show a singular attention
+at the center of the image, rather than 2 separate focus maps as shown in the car and the boat cases we discussed above. This shows that Grad-CAM
+and Grad-CAM++ visualizations are consistent with the Segmentation maps output.
+
+Let's look at another image, an image of skunks. Since skunks do not belong in the 20 categories on which the Semantic Segmentation models
+are trained on, we observe that DeepLabv3 and FCN classify most of it as background except a coarse path. However, once again, instance
+segmentation fails to uniquely mask the 2 animals and considers it as 1, supposedly assuming the left skunk to be the original one with its head
+and the body spreading across the right half of the image. This can be verified by the CAM visualizations on the right where both images show
+attention given to the left skunk.
+
+Lastly, one final image just for concluding our observations. An image of both the human and a horse. If 2 separate entities are given, are
+segmentation and CAM maps consistent. As can be seen, both Semantic and Instance maps uniquely mask both separate entities. However, if you notice
+Grad-CAM and Grad-CAM++ both highlight the horse since it identifies it as the horse. This is quite accurate considering that Grad-CAM and Grad-CAM++
+were trained on 1000 IMAGENET categories and can classify a human, while Instance segmentation was only trained on 80 categories. The models
+are interpretable and their behaviour seems to be consistent with that the network sees.
+
+The above three decisive observations are particularly trustworthy, since we used ResNet-101 for our Grad-CAM and Grad-CAM++ visualizations.
+If you do recall, our segmentation models too had ResNet backbone architecture and hence the results seem to be explainable in itself.
