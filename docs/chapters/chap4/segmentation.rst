@@ -39,7 +39,7 @@ in a minimal way.
    :maxdepth: 4
 
    semantic/semantic
-   instance/instance
+   instanced/instance
 
 .. rubric:: Citations
 
