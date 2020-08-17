@@ -124,6 +124,13 @@ self interpretable. For instance, consider a bicycle. It is a fairly interpretab
 physical energy by a person. This physical energy inturn helps deliver the energy required to turn the wheels via a chain which
 runs through from the pedals to the back tyres of the cycle. A fairly simple system. Quite **interpretable**!
 
+.. figure:: ../../_static/bicycle.gif
+   :align: center
+   :width: 600px
+
+   A bicycle mechanism :raw-html:`<br />`
+   *credits:* `stringbike <https://www.stringbike.com/_img/magic-stringdrive-01.gif>`_
+
 What about a system which is complex. Like a car for instance. How does the internal combustion engine work? Why does it work the way it works? As mentioned
 earlier, the more complex a system is, the harder it turns out to be self explanatory in nature aka. **less interpretable**. And so, while
 these complex systems do give out efficient results, saves us time and delivers loads of profits, at times, they can turn out to
@@ -138,13 +145,6 @@ Some important reasons why interpretability is required in Computer Vision:
    improve_classifier
    learn_from_algorithm
    get_insights
-
-.. figure:: ../../_static/bicycle.gif
-   :align: center
-   :width: 600px
-
-   A bicycle mechanism :raw-html:`<br />`
-   *credits:* `stringbike <https://www.stringbike.com/_img/magic-stringdrive-01.gif>`_
 
 .. rubric:: Citations
 
