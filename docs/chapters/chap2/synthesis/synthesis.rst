@@ -48,7 +48,7 @@ Image Synthesis can have many potential applications the most important being, d
 shortage of data for specific tasks. In such places we can create synthetic data given a text. This synthetic data can then be
 used with actual data for training our algorithms. They can be used to balance imbalanced datasets. Likewise, another major
 application is super resolution. Given a blurry image, how can we get a new image with higher and enhanced resolution? Image-to-image
-translation can help in super resolution. Poor resolution images can be enhanced efficiently.
+translation can help in super resolution. Poor resolution images can be enhanced efficiently. [1]_
 
 .. figure:: ../../../_static/superresolution.png
    :align: center
@@ -68,7 +68,9 @@ generator starts producing the same output (or a small set of outputs) over and 
 learn to always reject that output. But if the next generation of discriminator gets stuck in a local minimum and doesn't find the
 best strategy, then it's too easy for the next generator iteration to find the most plausible output for the current discriminator.
 Each iteration of generator over-optimizes for a particular discriminator, and the discriminator never manages to learn its way out
-of the trap. As a result the generators rotate through a small set of output types. This form of GAN failure is called mode collapse.
+of the trap. As a result the generators rotate through a small set of output types. This form of GAN failure is called mode collapse. [2]_
 
-https://machinelearningmastery.com/impressive-applications-of-generative-adversarial-networks/
-https://developers.google.com/machine-learning/gan/problems
+.. rubric:: Citations
+
+.. [1] `https://machinelearningmastery.com/impressive-applications-of-generative-adversarial-networks/ <https://machinelearningmastery.com/impressive-applications-of-generative-adversarial-networks/>`_
+.. [2] `https://developers.google.com/machine-learning/gan/problems <https://developers.google.com/machine-learning/gan/problems>`_

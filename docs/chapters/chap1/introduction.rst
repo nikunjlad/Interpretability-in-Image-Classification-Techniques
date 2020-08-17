@@ -82,12 +82,7 @@ revolution is the one which saw the maximum amount of growth both economically a
 
 We came across the term artificial intelligence and how it can change the way we operate in our lives. We are slowly
 transitioning from the **Digital Revolution** to the **A.I. Revolution** which will completely transform human experiences.
-
-1.1 Objective of the book
--------------------------
-
-This book, comprises of a particular part of research which helps us reason why AI works the way it works. As part of
-the A.I. Revolution, it's important to understand the dark areas which causes mysterious human level results on
+As part of the A.I. Revolution, it's important to understand the dark areas which causes mysterious human level results on
 complicated problems. Interpretability is very necessary for human understanding, and as humans we tend to unravel the
 complicated day-to-day processes so as to better understand our environment and conditions. We are embarrassingly curious,
 by nature and tend to explore every area we possibly can. While sometimes, this may act against us, almost always, it
@@ -99,7 +94,7 @@ understand the reasons why those decisions were arrived by taking help of explai
 
 1.2 About the book
 ------------------
-
+This book, comprises of a particular part of research which helps us reason why AI works the way it works.
 This book has a simple structure and as more research is done, it can be extended further with more experiments and
 results. As for the layout of this book, we first touch upon what Computer Vision is, since that is the area we intend to
 explore. We would then like to know how computer vision systems work internally, what causes it to produce near-human level inferences,
