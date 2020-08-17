@@ -31,10 +31,10 @@ be a hard thing to achieve without interpretability methods like Grad-CAM. Our m
 what they predict and that's why Grad-CAM can be beneficial. There always exists a trade off between accuracy and simplicity
 (interpretability).
 
-Interpretability helps at 3 stages
+**Interpretability helps at 3 stages:** :raw-html:`<br />`
 1. When AI is weaker than humans and not ready for the real world (VQA), it can help to identify failure nodes, focusing
-our effort on more important stuff.
-2. When AI is at par with humans and deployable (image classification), it helps establish trust and confidence among users.
+our effort on more important stuff. :raw-html:`<br />`
+2. When AI is at par with humans and deployable (image classification), it helps establish trust and confidence among users. :raw-html:`<br />`
 3. When AI is significantly stronger than humans (AlphaGo), machines can teach humans how to make better decisions.
 
 What makes a good visual explanation? It should be discriminative in nature and it should be high resolution

@@ -10,7 +10,7 @@
    :format: html
 
 Grad-CAM++ is the extension of Grad-CAM which we observed earlier. Grad-CAM is not good at localizing multiple objects in images
-belonging to the same class. For single object images, Grad-CAM do not capture the object in it’s entirety. This is required for better
+belonging to the same class. For multiple object images, Grad-CAM do not capture the object in it’s entirety. This is required for better
 recognition tasks and hence, Grad-CAM++ fills for these caveats.
 
 .. figure:: ../../../_static/gradcampp.png

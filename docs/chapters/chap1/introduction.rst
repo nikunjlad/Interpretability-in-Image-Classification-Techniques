@@ -107,9 +107,9 @@ what are the various sub-domains of this vast field and the applications where w
 understand what is interpretability in general and its need in understanding black box models. We try to understand the bias
 in AI which is prevalent due to the inherent nature of human bias(which apparently gets passed on to machines in their underlying
 algorithms). Since the field of computer vision is very vast, we decide to apply our interpretability methods on a specific
-domain, in our case Image Segmentation. The following set of chapters help us get a fair idea of Semantic, Instance and
-Panoptic Segmentation Techniques. We then see 3 algorithms which can help us understand interpretabilty in Image Segmentation
-techiques - Grad-CAM, Grad-CAM++ and Score-CAM. Lastly, we reason about our observations and give a subjective conclusion
+domain, in our case Image Segmentation. The following set of chapters help us get a fair idea of Semantic and Instance Segmentation
+Techniques. We then see 2 algorithms which can help us understand interpretabilty in Image Segmentation
+techiques - Grad-CAM and Grad-CAM++. Lastly, we reason about our observations and give a subjective conclusion
 based on our experiments and tests. Please do note, that we have made use of PyTorch, a deep learning framework developed
 by `Facebook AI Research (FAIR) <https://ai.facebook.com/research/>`_, for our work.
 

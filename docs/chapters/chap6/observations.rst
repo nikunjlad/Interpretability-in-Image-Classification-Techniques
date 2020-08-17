@@ -20,7 +20,7 @@ observe the semantic and instance segmented maps on these images and see how goo
    We simply observe the interpretable nature of classification models and extend the conclusions on segmentation models.
    If you recollect, **Semantic Segmentation = Classification + Localization** and **Instance Segmentation = Semantic Segmentation + Object Detection**.
    Therefore, we argue that any interpretable results we acquire for classification gets carried forward to Segmentation too due to this
-   inverse co-relation. This work is not a direct observations of Interpretable Segmentation models.
+   inverse correlation. This work is not a direct observations of Interpretable Segmentation models.
 
 
 Before we jump into our observations, its important to note than we used pretrained models provided by PyTorch for our work.
@@ -71,10 +71,12 @@ at the center of the image, rather than 2 separate focus maps as shown in the ca
 and Grad-CAM++ visualizations are consistent with the Segmentation maps output.
 
 Let's look at another image, an image of skunks. Since skunks do not belong in the 20 categories on which the Semantic Segmentation models
-are trained on, we observe that DeepLabv3 and FCN classify most of it as background except a coarse path. However, once again, instance
+are trained on, we observe that DeepLabv3 and FCN classify most of it as background except a coarse patch. However, once again, instance
 segmentation fails to uniquely mask the 2 animals and considers it as 1, supposedly assuming the left skunk to be the original one with its head
 and the body spreading across the right half of the image. This can be verified by the CAM visualizations on the right where both images show
-attention given to the left skunk.
+attention given to the left skunk. We can clearly conclude from these two instances that entities which are too close to each other of the same
+category sometimes becomes hard for the network to be distinguished. In our case, the humans and the skunks were too close to be considered as a
+separate entity.
 
 Lastly, one final image just for concluding our observations. An image of both the human and a horse. If 2 separate entities are given, are
 segmentation and CAM maps consistent. As can be seen, both Semantic and Instance maps uniquely mask both separate entities. However, if you notice
