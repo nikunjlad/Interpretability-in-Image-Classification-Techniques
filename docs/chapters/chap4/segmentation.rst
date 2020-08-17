@@ -3,6 +3,9 @@
 4. Image Segmentation Techniques
 ================================
 
+.. toctree::
+   :maxdepth: 3
+
 .. role:: raw-html(raw)
    :format: html
 
