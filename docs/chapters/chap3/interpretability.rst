@@ -108,7 +108,7 @@ the previous example, the reasons are possibly endless. Explainability, yet agai
 4. **Algorithmic Complexity**: It defines the computational complexity of a method where the explanations are generated.
 5. **Fidelity**: High fidelity is considered as one of the important properties of an explanation as low fidelity lacks in explaining the machine learning model.
 
-.. admonition:: Note
+.. warning::
 
    Although Interpretablility and Explainability have different purposes, for the sake of simplicity, we use Interpretability
    to denote both the concept of Interpretability and Explainability. From here on, the use of the word Interpretability will
