@@ -12,5 +12,5 @@ Contents
    chapters/chap1/introduction
    chapters/chap2/vision
    chapters/chap3/interpretability
-   chapters/chap5/algorithms
-   chapters/chap6/observations
+   chapters/chap4/algorithms
+   chapters/chap5/observations

@@ -1,5 +1,5 @@
 
-5. Interpretability in Computer Vision
+4. Interpretability in Computer Vision
 ======================================
 
 Interpretability in Computer Vision requires algorithms which can help us understand the nuts and bolts of how deep
