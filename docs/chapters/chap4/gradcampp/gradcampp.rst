@@ -1,6 +1,6 @@
 
 
-5.2 Grad-CAM++
+4.2 Grad-CAM++
 ==============
 
 .. toctree::
