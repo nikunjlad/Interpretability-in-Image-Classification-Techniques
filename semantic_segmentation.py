@@ -3,6 +3,9 @@ from PIL import Image
 import matplotlib.pyplot as plt
 import torch, os, time, click, sys, cv2
 import torchvision.transforms as T
+from captum.attr import LayerGradCam, FeatureAblation, LayerActivation, LayerAttribution
+from captum.attr import visualization as viz
+
 import numpy as np
 
 """
@@ -33,13 +36,16 @@ def get_device(cuda):
 class SemanticSegmentation:
 
     def __init__(self, model, image=None, show_orig=True, dev="cuda", arch_name="fcn_resnet50",
-                 stream=False):
+                 stream=False, img_path=None):
         self.model = model
         self.image = image
         self.show_orig = show_orig
         self.dev = dev
         self.arch_name = arch_name
         self.stream = stream
+        self.out_max = None
+        self.inp = image
+        self.img_path = img_path
 
     def decode_segmap(self, image, orig, nc=21):
         # color map to give to individual classes
@@ -70,22 +76,54 @@ class SemanticSegmentation:
         rgba = np.stack([r, g, b], axis=2)  # stack color channels
         original = cv2.resize(np.array(orig),
                               (rgba.shape[1], rgba.shape[0]))  # original image to feature map size
+
         # convert the original image from BGR to RGB (OpenCV (^-^))
         original = cv2.cvtColor(original, cv2.COLOR_BGR2RGB)
         cv2.addWeighted(rgba, alpha, original, 1 - alpha, 0, rgba)  # alpha blend segmented map on the original image
 
         return rgba, original
 
+    def agg_segmentation_wrapper(self):
+        model_out = self.model(self.inp)['out']
+        # Creates binary matrix with 1 for original argmax class for each pixel
+        # and 0 otherwise. Note that this may change when the input is ablated
+        # so we use the original argmax predicted above, out_max.
+        selected_inds = torch.zeros_like(model_out[0:1]).scatter_(1, self.out_max, 1)
+        return (model_out * selected_inds).sum(dim=(2, 3))
+
     def segment(self):
         # define the transformations we need to apply on the image
-        trf = T.Compose([T.Resize(size=(227, 227)),
-                         T.ToTensor(),
+        # T.Resize(size=(227, 227))
+        trf = T.Compose([T.Resize(640), T.ToTensor(),
                          T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])])
 
         # apply transformation on the input image and and add an additional dimension before computing
-        inp = trf(self.image).unsqueeze(0).to(self.dev)
-        out = self.model(inp)  # apply model on the input tensor
+        self.inp = trf(self.image).unsqueeze(0).to(self.dev)
+        out = self.model(self.inp)  # apply model on the input tensor
         om = torch.argmax(out['out'].squeeze(), dim=0).detach().cpu().numpy()  # acquire output tensor and convert to numpy
+        self.out_max = torch.argmax(out['out'], dim=1, keepdim=True)
+
+        lgc = LayerGradCam(self.agg_segmentation_wrapper, self.model.backbone.layer4[2].conv3)
+        self.inp.requires_grad = True
+        gc_attr = lgc.attribute(self.inp, target=18)
+
+        la = LayerActivation(self.agg_segmentation_wrapper, self.model.backbone.layer4[2].conv3)
+        activation = la.attribute(self.inp)
+        print("Input Shape:", self.inp.shape)
+        print("Layer Activation Shape:", activation.shape)
+        print("Layer GradCAM Shape:", gc_attr.shape)
+
+        # viz.visualize_image_attr(gc_attr[0].cpu().permute(1, 2, 0).detach().numpy(), sign="all")
+
+        upsampled_gc_attr = LayerAttribution.interpolate(gc_attr, self.inp.shape[2:])
+        print("Upsampled Shape:", upsampled_gc_attr.shape)
+        preproc = T.Compose([T.Resize(640),T.ToTensor()])
+        orig = preproc(self.image)
+        print(orig.shape)
+        viz.visualize_image_attr_multiple(upsampled_gc_attr[0].cpu().permute(1, 2, 0).detach().numpy(),
+                                          original_image=orig.permute(1, 2, 0).numpy(),
+                                          signs=["all", "positive", "negative"],
+                                          methods=["original_image", "blended_heat_map", "blended_heat_map"])
 
         # create segmentation map
         rgb, original = self.decode_segmap(om, orig=self.image)
@@ -180,6 +218,8 @@ def semantic(image_path, arch, show_fig, output, cuda):
 
     device = get_device(cuda)
     model = models.segmentation.__dict__[arch](pretrained=True).eval()
+    # for name, module in model.named_modules():
+    #     print(name)
 
     s = SemanticSegmentation(model, image=img, show_orig=False, dev=device, arch_name=arch)
     print("Segmenting image using {} network!".format(str(mdl_name(arch))))

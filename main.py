@@ -14,7 +14,6 @@ from grad_cam import (
 )
 
 
-# if a model includes LSTM, such as in image captioning,
 # torch.backends.cudnn.enabled = False
 
 # function to set CUDA device if CUDA is available else set the device to CPU
@@ -178,7 +177,7 @@ def vis(image_paths, target_layer, arch, topk, output_dir, cuda, method):
 
     # Synset words
     classes = get_classtable()
-    # print("Num of classes: ", len(classes))
+    print("Num of classes: ", len(classes))
 
     # Model from torchvision
     model = models.__dict__[arch](pretrained=True)  # load pretrained resnet152

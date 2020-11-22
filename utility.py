@@ -18,6 +18,7 @@ from detectron2.engine.defaults import DefaultPredictor
 from detectron2.utils.video_visualizer import VideoVisualizer
 from detectron2.utils.visualizer import ColorMode, Visualizer
 from PIL import Image
+import matplotlib.pyplot as plt
 
 warnings.filterwarnings("ignore")
 
@@ -233,7 +234,7 @@ class AsyncPredictor:
 # function to process 1 image at a time
 def preprocess(image_path):
     raw_image = cv2.imread(image_path)
-    raw_image = cv2.resize(raw_image, (227, 227))
+    image = cv2.resize(raw_image, (227, 227))
     # we call transforms.Compose class which returns the object and then we pass the image as parameter
     # whenever we use the object as a function and pass a parameter to it, it internally calls the __call__ method
     image = transforms.Compose(
@@ -242,6 +243,8 @@ def preprocess(image_path):
             transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
         ]
     )(raw_image[..., ::-1].copy())  # we send copy of original image for transforming
+    print("Transformed shape", image.shape)
+    plt.imshow(image.permute(1,2,0)); plt.axis('off'); plt.show()
     return image, raw_image
 
 
@@ -301,6 +304,7 @@ def save_sensitivity(filename, maps):
     maps = np.uint8(maps * 255.0)
     maps = cv2.resize(maps, (224, 224), interpolation=cv2.INTER_NEAREST)
     cv2.imwrite(filename, maps)
+
 
 def save_class_activation_images(org_img, activation_map, arch, target_layer, file_name):
     """
@@ -525,4 +529,3 @@ def get_example_params(example_index):
             target_class,
             file_name_to_export,
             pretrained_model)
-

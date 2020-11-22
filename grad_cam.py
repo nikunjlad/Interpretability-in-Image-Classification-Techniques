@@ -139,6 +139,7 @@ class GradCAM(_BaseWrapper):
         print("Inside Generate function of Grad-CAM")
         fmaps = self._find(self.fmap_pool,
                            self.target_layer)  # get the feature map of a particular layer during forward pass
+        print("Fmaps shape",fmaps.shape)
         grads = self._find(self.grad_pool, self.target_layer)  # get the gradients of a particular layer during backward pass
 
         if self.gradcampp == "gradcampp":
