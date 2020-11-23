@@ -78,10 +78,10 @@ with occlusion maps. Another important drawback of deep Neural Networks are its 
 Grad-CAM is robust to adversarial noise. Grad-CAM also helps detect and remove bias in datasets. For instance, if a
 dataset has a large number of images of female nurses and doctors, it can help us figure out why the output was a nurse
 or a doctor. Was the network focussing on the facial features for its prediction or was it attending to other important
-features like stethoscope or type of clothes, etc. In Grad-CAM. Neurons act as concept detectors in a Convolutional
+features like stethoscope or type of clothes, etc. In Grad-CAM, neurons act as concept detectors in a Convolutional
 Neural Network as mentioned in literature. Higher positive values of neuron importance indicate that the concept is
 present in the image and it leads to a higher class score; whereas higher negative value indicates that the concept is
-absent in the image, which further leads to increase in class score.
+absent in the image, which further leads to decrease in class score.
 
 .. figure:: ../../../_static/gradcamvis.png
    :align: center
@@ -94,7 +94,6 @@ in the image, and conversely the negative concepts which don’t exist in the im
 model describes and this helps in understanding and interpreting captioning tasks. Furthermore, with weakly supervised
 segmentation tasks, where the idea is to segment objects in an image, Grad-CAM can help to visualize the feature maps
 which helps interpretability in Image Segmentation tasks.
-
 
 In summary, Grad-CAM can be used to get visual as well as textual explanations for complex deep neural networks without
 any architectural changes and it tackles many problems of computer vision domain.

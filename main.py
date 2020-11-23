@@ -1,6 +1,4 @@
-import os
-import click
-import torch
+import torch, ast, click, os
 import torch.nn.functional as F
 from torchvision import models
 from utility import get_classtable, load_images, save_gradient, save_gradcam, save_sensitivity
@@ -36,6 +34,15 @@ model_names = sorted(
 )
 
 
+class ParseList(click.Option):
+
+    def type_cast_value(self, ctx, value):
+        try:
+            return ast.literal_eval(value)
+        except Exception as e:
+            raise click.BadParameter(value)
+
+
 class Visualizations:
 
     def __init__(self, model=None, images=None, topk=3, classes=None, arch="resnet101",
@@ -66,7 +73,7 @@ class Visualizations:
 
                 save_gradient(
                     filename=os.path.join(self.output_dir, "{}-{}-vanilla-{}.png".format(j, self.arch,
-                                                                                     self.classes[ids[j, i]]), ),
+                                                                                         self.classes[ids[j, i]]), ),
                     gradient=gradients[j]
                 )
 
@@ -88,7 +95,7 @@ class Visualizations:
 
                 save_gradient(
                     filename=os.path.join(self.output_dir, "{}-{}-deconvnet-{}.png".format(j, self.arch,
-                                                                                       self.classes[ids[j, i]]), ),
+                                                                                           self.classes[ids[j, i]]), ),
                     gradient=gradients[j],
                 )
 
@@ -111,7 +118,7 @@ class Visualizations:
                 # Guided Backpropagation
                 save_gradient(
                     filename=os.path.join(self.output_dir, "{}-{}-guided-{}.png".format(j, self.arch,
-                                                                                    self.classes[ids[j, i]]), ),
+                                                                                        self.classes[ids[j, i]]), ),
                     gradient=gradients[j],
                 )
 
@@ -139,12 +146,12 @@ class Visualizations:
 
                 # Grad-CAM
                 save_gradcam(filename=os.path.join(self.output_dir, "{}-{}-{}-{}-{}.png".format(
-                    j, self.arch, self.method, self.target_layer, self.classes[ids[j, i]]),),
+                    j, self.arch, self.method, self.target_layer, self.classes[ids[j, i]]), ),
                              gcam=regions[j, 0], raw_image=self.raw_images[j])
 
                 # Guided Grad-CAM
                 save_gradient(filename=os.path.join(self.output_dir, "{}-{}-guided_{}-{}-{}.png".format(
-                    j, self.arch, self.method, self.target_layer, self.classes[ids[j, i]]),),
+                    j, self.arch, self.method, self.target_layer, self.classes[ids[j, i]]), ),
                               gradient=torch.mul(regions, gradients)[j])
 
 
@@ -162,14 +169,14 @@ def main(ctx):
 
 
 @main.command()  # this is a click command. Infact the first click command. It has below optional arguments
-@click.option("-i", "--image-paths", type=str, required=True)
+@click.option("-i", "--image-paths", type=str, multiple=True, required=True)
 @click.option("-a", "--arch", type=click.Choice(model_names), required=True)  # model to be used
-@click.option("-t", "--target-layer", type=str, required=True)  # layer to be visualized
+@click.option("-t", "--layer-list", cls=ParseList, required=True)  # layer to be visualized
 @click.option("-k", "--topk", type=int, default=3)  # top k most relevant searches to be returned
 @click.option("-o", "--output-dir", type=str, default="./results")  # provide output directory
 @click.option("--cuda/--cpu", default=True)  # run on cpu or gpu?
 @click.option("-m", "--method", type=str, default="vanilla")  # "vanilla", "deconv", "guidedbp", "gradcam", "gradcampp"
-def vis(image_paths, target_layer, arch, topk, output_dir, cuda, method):
+def vis(image_paths, layer_list, arch, topk, output_dir, cuda, method):
     """
     Visualize model responses given multiple images
     """
@@ -183,32 +190,45 @@ def vis(image_paths, target_layer, arch, topk, output_dir, cuda, method):
     model = models.__dict__[arch](pretrained=True)  # load pretrained resnet152
     model.to(device)
     model.eval()  # evaluate the pretrained model
+    print(model)
+    for name, module in model.named_modules():
+        print(name)
+
+    v = Visualizations(model=model, topk=topk, classes=classes, arch=arch, method=method)
 
     # get a list of transformed and original raw images
-    images, raw_images = load_images(image_paths)
-    images = torch.stack(images).to(device)  # stack the transformed and processed images and send to device
-    output_dir = os.path.join(output_dir, image_paths.split("/")[-1].split(".")[0])
+    for img_path in image_paths:
+        images, raw_images = load_images(img_path)
+        images = torch.stack(images).to(device)  # stack the transformed and processed images and send to device
+        save_dir = os.path.join(output_dir, img_path.split("/")[-1].split(".")[0])
+        save_dir = save_dir + "/" + arch
 
-    if not os.path.exists(output_dir):
-        os.mkdir(output_dir)
+        if not os.path.exists(save_dir):
+            os.mkdir(save_dir)
 
-    """
-    Common usage:
-    1. Wrap your model with visualization classes defined in grad_cam_segs.py
-    2. Run forward() with images
-    3. Run backward() with a list of specific classes
-    4. Run generate() to export results
-    """
-    v = Visualizations(model=model, images=images, topk=topk, classes=classes, arch=arch, target_layer=target_layer,
-                       method=method, raw_images=raw_images, output_dir=output_dir)
-    if method == "vanilla":
-        v.vanilla_backpropagation()
-    elif method == "deconv":
-        v.deconvolution()
-    elif method == "guidedbp":
-        v.guided_backpropagation()
-    else:
-        v.gradcam()
+        v.output_dir = save_dir
+
+        """
+        Common usage:
+        1. Wrap your model with visualization classes defined in grad_cam_segs.py
+        2. Run forward() with images
+        3. Run backward() with a list of specific classes
+        4. Run generate() to export results
+        """
+
+        for target_layer in layer_list:
+            v.images = images
+            v.raw_images = raw_images
+            v.target_layer = target_layer
+
+            if method == "vanilla":
+                v.vanilla_backpropagation()
+            elif method == "deconv":
+                v.deconvolution()
+            elif method == "guidedbp":
+                v.guided_backpropagation()
+            else:
+                v.gradcam()
 
 
 @main.command()  # this is a click command. Infact the third click command. It has below optional arguments

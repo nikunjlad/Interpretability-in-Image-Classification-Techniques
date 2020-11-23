@@ -1,7 +1,7 @@
 .. rst-class:: hide-header
 
 A Guide to Interpretability in Image Classification Techniques
-============================================================
+==============================================================
 
 Contents
 --------

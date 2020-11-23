@@ -5,7 +5,7 @@
 
 """
 
-import bisect, cv2, torch, atexit, warnings, os, copy
+import bisect, cv2, torch, atexit, warnings, os, copy, imutils
 import multiprocessing as mp
 from collections import deque
 from torchvision import transforms
@@ -234,7 +234,7 @@ class AsyncPredictor:
 # function to process 1 image at a time
 def preprocess(image_path):
     raw_image = cv2.imread(image_path)
-    image = cv2.resize(raw_image, (227, 227))
+    image = imutils.resize(raw_image, width=800)
     # we call transforms.Compose class which returns the object and then we pass the image as parameter
     # whenever we use the object as a function and pass a parameter to it, it internally calls the __call__ method
     image = transforms.Compose(
@@ -242,9 +242,7 @@ def preprocess(image_path):
             transforms.ToTensor(),
             transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
         ]
-    )(raw_image[..., ::-1].copy())  # we send copy of original image for transforming
-    print("Transformed shape", image.shape)
-    plt.imshow(image.permute(1,2,0)); plt.axis('off'); plt.show()
+    )(image[..., ::-1].copy())  # we send copy of original image for transforming
     return image, raw_image
 
 
@@ -284,13 +282,12 @@ def save_gradcam(filename, gcam, raw_image, paper_cmap=False):
     cmap = cm.jet_r(gcam)[..., :3] * 255.0
     print("Raw image type: ", raw_image.shape)
     print("Gcam map type: ", cmap.shape)  #
-    # cv2.imshow("gradcam", cmap.astype(np.uint8))
-    # cv2.waitKey(0)
-    # cv2.destroyAllWindows()
+
     if paper_cmap:
         alpha = gcam[..., None]
         gcam = alpha * cmap + (1 - alpha) * raw_image
     else:
+        cmap = cv2.resize(cmap, (raw_image.shape[1], raw_image.shape[0]), interpolation=cv2.INTER_CUBIC)
         gcam = (cmap.astype(np.float) + raw_image.astype(np.float)) / 2
     cv2.imwrite(filename, np.uint8(gcam))
 
